@@ -41,7 +41,7 @@ const CourseSteps = () => {
             onClick={() => toggleStep(index)}
           >
             <p className="text-gray-800 font-medium">
-              Step {index + 1}: ex: Tapez le mot affiché à l'écran en utilisant uniquement...
+              Step {index + 1}: {step.instruction || 'Cliquez pour ajouter une instruction'}
             </p>
             {step.isOpen ? (
               <ChevronUp className="text-gray-600" />
