@@ -1,13 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { ChevronDown, ChevronUp, MinusCircle } from 'lucide-react';
 
-const CourseSteps = () => {
-  const [steps, setSteps] = useState([
-    { instruction: '', expectedAnswer: '', image: null as File | null, isOpen: false }
-  ]);
-
-  const addStep = () =>
+const CourseSteps = ({ steps, setSteps }) => {
+  const addStep = () => {
     setSteps([...steps, { instruction: '', expectedAnswer: '', image: null, isOpen: false }]);
+  };
 
   const removeStep = (index: number) => {
     setSteps(prev => prev.filter((_, i) => i !== index));
@@ -43,8 +40,9 @@ const CourseSteps = () => {
             <p className="text-gray-800 font-medium">
               Step {index + 1}: {
                 step.instruction.length > 30
-                  ? `${step.instruction.substring(0, 30)}...` :
-                    step.instruction || ' Ajouter une instruction'}
+                  ? `${step.instruction.substring(0, 30)}...`
+                  : step.instruction || ' Ajouter une instruction'
+              }
             </p>
             {step.isOpen ? (
               <ChevronUp className="text-gray-600" />
