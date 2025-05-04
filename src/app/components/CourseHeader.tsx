@@ -1,6 +1,16 @@
+
 import React from 'react';
 
-const CourseHeader = () => {
+const CourseHeader = ({
+  title,
+  setTitle,
+  description,
+  setDescription,
+  module,
+  setModule,
+  duration,
+  setDuration
+}) => {
   return (
     <div className="grid grid-cols-2 gap-4">
       <div>
@@ -10,6 +20,8 @@ const CourseHeader = () => {
           id="title"
           placeholder="ex: Les caractères spéciaux"
           className="w-full p-2 rounded bg-gray-600 text-white placeholder-gray-300"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
         />
       </div>
       <div>
@@ -19,12 +31,21 @@ const CourseHeader = () => {
           id="description"
           placeholder="ex: Apprendre à utiliser les caractères spéciaux"
           className="w-full p-2 rounded bg-gray-600 text-white placeholder-gray-300"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
         />
       </div>
       <div>
         <label htmlFor="module" className="block text-gray-700 font-medium mb-1">Modules</label>
-        <select id="module" className="w-full p-2 rounded bg-gray-600 text-white">
-          <option>Module</option>
+        <select
+          id="module"
+          className="w-full p-2 rounded bg-gray-600 text-white"
+          value={module}
+          onChange={(e) => setModule(e.target.value)}
+        >
+          <option value="">Sélectionner un module</option>
+          <option value="module1">Module 1</option>
+          <option value="module2">Module 2</option>
         </select>
       </div>
       <div>
@@ -35,6 +56,8 @@ const CourseHeader = () => {
             id="duration"
             className="w-20 p-2 rounded bg-gray-600 text-white mr-2"
             placeholder="5"
+            value={duration}
+            onChange={(e) => setDuration(Number(e.target.value))}
           />
           <span className="text-gray-700 mt-2">minutes (optionel)</span>
         </div>
