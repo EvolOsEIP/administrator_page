@@ -1,33 +1,38 @@
 import React, { useState } from 'react';
 
-const createModule = async (e: React.FormEvent) => {
-  e.preventDefault();
-  const form = e.currentTarget;
-  const title = form.title.value;
-  const level = form.level.value.toLowerCase();
-
-  const response = await fetch(`${process.env.NEXT_PUBLIC_HOST_URL}/api/modules`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `${process.env.NEXT_PUBLIC_AUTHORIZATION_TOKEN}`,
-    },
-    body: JSON.stringify({
-      name: title,
-      levelRequired: level,
-    }),
-  });
-
-  if (response.ok) {
-    alert('Module created successfully!');
-  } else {
-    alert('Error creating module');
-  }
+interface ModuleCreationProps {
+  onClose: () => void;
 }
 
-const ModuleCreation = () => {
+const ModuleCreation = ({ onClose }) => {
   const [title, setTitle] = useState('');
   const [level, setLevel] = useState('');
+
+  const createModule = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const title = form.title.value;
+    const level = form.level.value.toLowerCase();
+
+    const response = await fetch(`${process.env.NEXT_PUBLIC_HOST_URL}/api/modules`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `${process.env.NEXT_PUBLIC_AUTHORIZATION_TOKEN}`,
+      },
+      body: JSON.stringify({
+        name: title,
+        levelRequired: level,
+      }),
+    });
+
+    if (response.ok) {
+      alert('Module created successfully!');
+    } else {
+      alert('Error creating module');
+    }
+    onClose();
+  }
 
   return (
     <form className="max-w-4xl mx-auto p-6 bg-white rounded shadow-md space-y-6" onSubmit={createModule}>
