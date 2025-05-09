@@ -62,9 +62,16 @@ const CourseForm = ({
           }
         ]
       }),
+    })
+    .then ((res) => {
+      if (res.ok) {
+        alert("Course created successfully!");
+      }
+      else {
+        alert("Error creating course.");
+      }
+      return res;
     });
-
-    console.log(await res.json());
   };
 
   return (
