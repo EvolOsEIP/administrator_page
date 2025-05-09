@@ -1,17 +1,22 @@
-
 import React, { useState } from 'react';
 import CourseHeader from './CourseHeader';
 import CourseSteps from './CourseSteps';
 import SubmitButton from './SubmitButton';
 
-const CourseForm = () => {
+const CourseForm = ({
+  moduleName,
+  moduleId
+}) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [module, setModule] = useState('');
+  // const [module, setModule] = useState('');
   const [duration, setDuration] = useState('');
   const [steps, setSteps] = useState([
     { instruction: '', expectedAnswer: '', image: null as File | null }
   ]);
+
+  //console.log("Adding a new course to module: ", selectedModuleId);
+  console.log("Adding a new course to module: ", moduleName + " " + moduleId);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -47,6 +52,7 @@ const CourseForm = () => {
       body: JSON.stringify({
         courses: [
           {
+            moduleId: moduleId,
             courseIndex: 6,
             title,
             description,
@@ -63,13 +69,13 @@ const CourseForm = () => {
 
   return (
     <form className="max-w-4xl mx-auto p-6 bg-white rounded shadow-md space-y-6" onSubmit={handleSubmit}>
-      <CourseHeader 
+      <CourseHeader
         title={title}
         setTitle={setTitle}
         description={description}
         setDescription={setDescription}
-        module={module}
-        setModule={setModule}
+        module={moduleName}
+        //setModule={setModule}
         duration={duration}
         setDuration={setDuration}
       />
