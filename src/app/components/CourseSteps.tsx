@@ -53,9 +53,10 @@ const CourseSteps = ({ steps, setSteps }) => {
           {step.isOpen && (
             <div className="mt-4 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">Instructions</label>
+                <label className="block text-sm font-medium text-black">Instructions</label>
                 <textarea
-                  className="w-full p-2 mt-1 border border-gray-300 rounded"
+                  required
+                  className="w-full p-2 mt-1 border border-gray-300 rounded text-black"
                   placeholder="ex: Tapez le mot affiché à l'écran en utilisant uniquement le clavier..."
                   value={step.instruction}
                   onChange={(e) => {
@@ -66,10 +67,11 @@ const CourseSteps = ({ steps, setSteps }) => {
                 ></textarea>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Réponse attendue</label>
+                <label className="block text-sm font-medium text-black">Réponse attendue</label>
                 <input
+                  required
                   type="text"
-                  className="w-full p-2 mt-1 border border-gray-300 rounded"
+                  className="w-full p-2 mt-1 border border-gray-300 rounded text-black"
                   placeholder="ex: Bonjour Pierre"
                   value={step.expectedAnswer}
                   onChange={(e) => {
