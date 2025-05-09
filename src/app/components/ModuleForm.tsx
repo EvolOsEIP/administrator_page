@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import CourseForm from "./CourseForm"
+import ModuleCreation from "./ModuleCreation"
 
 interface Module {
   moduleId: number
@@ -13,6 +14,7 @@ const ModuleForm = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [selectedModule, setSelectedModule] = useState<Module | null>(null)
+  const [showModuleCreation, setShowModuleCreation] = useState(false)
 
   const getModules = async () => {
     setLoading(true)
@@ -88,8 +90,9 @@ const ModuleForm = () => {
                   <button
                     className="w-full p-3 border rounded bg-green-500 text-white hover:bg-green-600 transition-colors"
                     onClick={() => {
-                      handleModuleClick({ moduleId: 0, moduleName: "Create New Module" })
-                    }
+                      setShowModuleCreation(true);
+                      setSelectedModule(null);
+                    }}
                   >
                     Create New Module
                   </button>
@@ -108,6 +111,14 @@ const ModuleForm = () => {
             <CourseForm moduleName={selectedModule.moduleName} moduleId={selectedModule.moduleId} />
           ) : (
             console.log("No module selected")
+          )}
+          {showModuleCreation && (
+            <ModuleCreation
+              onClose={() => {
+                setShowModuleCreation(false)
+                getModules()
+              }}
+            />
           )}
         </div>
       </div>
