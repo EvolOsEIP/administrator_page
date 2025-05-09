@@ -7,7 +7,7 @@ const CourseHeader = ({
   description,
   setDescription,
   module,
-  setModule,
+  //setModule,
   duration,
   setDuration
 }) => {
@@ -37,16 +37,17 @@ const CourseHeader = ({
       </div>
       <div>
         <label htmlFor="module" className="block text-gray-700 font-medium mb-1">Modules</label>
-        <select
-          id="module"
-          className="w-full p-2 rounded bg-gray-600 text-white"
-          value={module}
-          onChange={(e) => setModule(e.target.value)}
-        >
-          <option value="">Sélectionner un module</option>
-          <option value="module1">Module 1</option>
-          <option value="module2">Module 2</option>
-        </select>
+        {//    <select
+    //     id="module"
+    //      className="w-full p-2 rounded bg-gray-600 text-white"
+    //      value={module}
+    //      //onChange={(e) => setModule(e.target.value)}
+    ////    >
+    //      <option value="">Sélectionner un module</option>
+    //      <option value="module1">Module 1</option>
+    //      <option value="module2">Module 2</option>
+    //    </select>
+        }
       </div>
       <div>
         <label htmlFor="duration" className="block text-gray-700 font-medium mb-1">Temps estimé</label>
