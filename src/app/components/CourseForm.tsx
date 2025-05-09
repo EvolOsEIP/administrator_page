@@ -9,17 +9,27 @@ const CourseForm = ({
 }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  // const [module, setModule] = useState('');
   const [duration, setDuration] = useState('');
   const [steps, setSteps] = useState([
     { instruction: '', expectedAnswer: '', image: null as File | null }
   ]);
 
-  //console.log("Adding a new course to module: ", selectedModuleId);
-  console.log("Adding a new course to module: ", moduleName + " " + moduleId);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (title.trim() === ''
+      || description.trim() === ''
+      || steps.some(step => step.instruction.trim() === ''
+      || step.expectedAnswer.trim() === '')) {
+
+      alert("Please fill in all required fields.");
+      return;
+    }
+    if (steps.length < 6) {
+      alert("Please add at least 6 steps.");
+      return;
+    }
 
     const courseSteps = steps.map((step, index) => ({
       title: `step ${index + 1}`,
@@ -82,7 +92,6 @@ const CourseForm = ({
         description={description}
         setDescription={setDescription}
         module={moduleName}
-        //setModule={setModule}
         duration={duration}
         setDuration={setDuration}
       />
