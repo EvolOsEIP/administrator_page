@@ -33,7 +33,7 @@ const CourseForm = ({
 
     const courseSteps = steps.map((step, index) => ({
       title: `step ${index + 1}`,
-      stepid: index + 1,
+      stepIndex: index + 1,
       widgets: {
         actions: [
           {
@@ -53,6 +53,32 @@ const CourseForm = ({
       instruction: step.instruction
     }));
 
+    const module = await fetch(`${process.env.NEXT_PUBLIC_HOST_URL}/api/roadmap`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${process.env.NEXT_PUBLIC_AUTHORIZATION_TOKEN}`,
+      }
+    }).then ((res) => {
+      if (res.ok) {
+        
+        console.log("Module fetched successfully!");
+      } else {
+        console.error("Error fetching module.");
+      }
+      return res;
+    });
+    var courseIndex = 0;
+    if (module.ok) {
+      const data = await module.json();
+      data.forEach((mod) => {
+        if (mod.moduleId === moduleId) {
+          console.log(`number of courses in module ${mod.name}: ${mod.courses.length}`);
+          courseIndex = mod.courses.length + 1; // Increment to get the next course index
+        }
+      });
+    }
+
     const res = await fetch(`${process.env.NEXT_PUBLIC_HOST_URL}/api/courses`, {
       method: "POST",
       headers: {
@@ -63,12 +89,12 @@ const CourseForm = ({
         courses: [
           {
             moduleId: moduleId,
-            courseIndex: 6,
+            courseIndex: courseIndex,
             title,
             description,
             instruction: "Follow the instructions to get started.",
             courseLevel: "eclaireur",
-            coursesteps: courseSteps
+            courseSteps: courseSteps
           }
         ]
       }),
