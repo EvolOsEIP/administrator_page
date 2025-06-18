@@ -25,7 +25,7 @@ const ModuleForm = () => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `${process.env.NEXT_PUBLIC_AUTHORIZATION_TOKEN}`,
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_AUTHORIZATION_TOKEN}`,
         },
       })
 

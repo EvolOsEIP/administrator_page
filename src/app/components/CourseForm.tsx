@@ -57,7 +57,7 @@ const CourseForm = ({
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `${process.env.NEXT_PUBLIC_AUTHORIZATION_TOKEN}`,
+        "Authorization": `Bearer ${process.env.NEXT_PUBLIC_AUTHORIZATION_TOKEN}`,
       },
       body: JSON.stringify({
         courses: [
