@@ -25,7 +25,7 @@ const ModuleForm = () => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_AUTHORIZATION_TOKEN}`,
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
         },
       })
 
@@ -55,7 +55,7 @@ const ModuleForm = () => {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Module Form</h1>
+      <h1 className="text-2xl font-bold mb-4 text-black">Module Form</h1>
 
       <div className="mb-4">
         <button
@@ -69,36 +69,36 @@ const ModuleForm = () => {
 
       {error && <div className="text-red-500 mb-4">{error}</div>}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="md:col-span-1">
+
+      <div className="flex gap-6 relative min-h-[400px]">
+        <div className="md:w-1/3">
           {modules.length > 0 ? (
-            <div>
-              <h2 className="text-xl font-semibold mb-2">Module List</h2>
-              <ul className="space-y-2">
-                {modules.map((module) => (
-                  <li
-                    key={module.moduleId}
-                    className={`p-3 border rounded cursor-pointer transition-colors ${
-                      selectedModule?.moduleId === module.moduleId ? "bg-blue-100 border-blue-500" : "hover:bg-gray-50"
-                    }`}
-                    onClick={() => handleModuleClick(module)}
-                  >
-                    <h3 className="font-medium">{module.moduleName}</h3>
-                  </li>
-                ))}
-                <li>
-                  <button
-                    className="w-full p-3 border rounded bg-green-500 text-white hover:bg-green-600 transition-colors"
-                    onClick={() => {
-                      setShowModuleCreation(true);
-                      setSelectedModule(null);
-                    }}
-                  >
-                    Create New Module
-                  </button>
-                  </li>
-              </ul>
-            </div>
+            <ul className="space-y-2">
+              {modules.map((module) => (
+                <li
+                  key={module.moduleId}
+                  className={`w-40 h-13 p-3 border rounded text-black cursor-pointer transition-colors ${
+                    selectedModule?.moduleId === module.moduleId
+                      ? "bg-blue-100 border-blue-500"
+                      : "hover:bg-gray-50"
+                  }`}
+                  onClick={() => handleModuleClick(module)}
+                >
+                  <h3 className="font-medium">{module.moduleName}</h3>
+                </li>
+              ))}
+              <li>
+                <button
+                  className="w-40 p-3 border rounded bg-green-500 text-white hover:bg-green-600 transition-colors"
+                  onClick={() => {
+                    setShowModuleCreation(true);
+                    setSelectedModule(null);
+                  }}
+                >
+                  Create New Module
+                </button>
+              </li>
+            </ul>
           ) : loading ? (
             <p>Loading modules...</p>
           ) : (
@@ -106,17 +106,20 @@ const ModuleForm = () => {
           )}
         </div>
 
-        <div className="md:col-span-2">
+        <div className="flex items-center justify-center md:w-2/3">
           {selectedModule ? (
-            <CourseForm moduleName={selectedModule.moduleName} moduleId={selectedModule.moduleId} />
+            <CourseForm
+              moduleName={selectedModule.moduleName}
+              moduleId={selectedModule.moduleId}
+            />
           ) : (
-            console.log("No module selected")
+            <p className="text-white">No module selected</p>
           )}
           {showModuleCreation && (
             <ModuleCreation
               onClose={() => {
-                setShowModuleCreation(false)
-                getModules()
+                setShowModuleCreation(false);
+                getModules();
               }}
             />
           )}
