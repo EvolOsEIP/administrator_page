@@ -6,11 +6,12 @@ type CardProps = {
   description?: string;
 };
 
-export default function Card({ title, imageSrc, description }: CardProps) {
+export default function Card({ title, imageSrc, description, onClick }: CardProps) {
   return (
     <div
-      className="rounded-lg overflow-hidden shadow-lg bg-white border border-gray-200"
+      className="rounded-lg overflow-hidden shadow-lg bg-white border border-gray-200 hover:shadow-xl transition-shadow duration-200 cursor-pointer"
       style={{ width: 150, height: 188 }}
+      onClick={onClick}
     >
       <div style={{ width: 150, height: 100, position: "relative" }}>
         <Image
