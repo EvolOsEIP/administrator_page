@@ -1,21 +1,26 @@
 'use client';
 
 import Image from "next/image";
-import CourseForm from './components/CourseForm';
-import ModuleForm from './components/ModuleForm';
+import  { LayoutWithNavbar } from "./components/layout-with-navbar";
+import Card from "./components/utils/Card";
 
 export default function Home() {
+  const nb_cards = 10;
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen py-2">
-      <h1 className="text-2xl font-bold mb-4">Course Registration</h1>
-         <ModuleForm />
-      <p className="mt-4 text-gray-600">
-        &copy; {new Date().getFullYear()} EvolOs. All rights reserved.
-      </p>
-      <p className="mt-2 text-gray-600">
-        Built with Next.js, TypeScript, and Tailwind CSS.
-        <br />
-      </p>
-    </div>
+    <LayoutWithNavbar>
+      <div className="p-8">
+        <div className="flex flex-wrap gap-8 gap-x-10 gap-y-10">
+          {Array.from({ length: nb_cards }).map((_, index) => (
+            <Card
+              key={index}
+              title={`Card ${index + 1}`}
+              imageSrc="/avatar.jpeg"
+              description="description"
+            />
+          ))}
+        </div>
+      </div>
+    </LayoutWithNavbar>
   );
 }
