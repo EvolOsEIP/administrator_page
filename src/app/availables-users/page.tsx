@@ -84,12 +84,10 @@ export default function Home() {
         const userName = Array.isArray(data)
           ? data.map((item) => item.username)
           : [data.username];
-        console.log("Usernames:", userName);
 
         const userId = Array.isArray(data)
           ? data.map((item) => item.userid)
           : [data.userid];
-        console.log("User IDs:", userId);
 
 
         setUserArray(userName);
@@ -120,6 +118,7 @@ export default function Home() {
                     setSelectedUserName(username);
                     setSelectedUser(userIdArray[index]);
                   }}
+                  canBeDeleted={false}
                 />
               )
             ))}
