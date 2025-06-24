@@ -57,11 +57,10 @@ const CourseForm = ({
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.NEXT_PUBLIC_AUTHORIZATION_TOKEN}`,
+        "Authorization": `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
       }
     }).then ((res) => {
       if (res.ok) {
-        
         console.log("Module fetched successfully!");
       } else {
         console.error("Error fetching module.");
@@ -83,7 +82,7 @@ const CourseForm = ({
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.NEXT_PUBLIC_AUTHORIZATION_TOKEN}`,
+        "Authorization": `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
       },
       body: JSON.stringify({
         courses: [
