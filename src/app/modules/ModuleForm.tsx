@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import CourseForm from "./CourseForm"
 import ModuleCreation from "./ModuleCreation"
+import { MinusCircle } from "lucide-react"
 
 interface Module {
   moduleId: number
@@ -39,6 +40,31 @@ const ModuleForm = () => {
   const [error, setError] = useState<string | null>(null)
   const [selectedModule, setSelectedModule] = useState<Module | null>(null)
   const [showModuleCreation, setShowModuleCreation] = useState(false)
+  const [showModuleDeletion, setShowModuleDeletion] = useState(false)
+
+  const removeModule = async (moduleId: number) => {
+    setLoading(true)
+    setError(null)
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_HOST_URL}/api/roadmap/${moduleId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
+        },
+      })
+
+      if (!res.ok) throw new Error("Network response was not ok")
+
+      // Refresh modules after deletion
+      getModules()
+    } catch (error) {
+      console.error("There has been a problem with your fetch operation:", error)
+      setError("Failed to delete module")
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const getModules = async () => {
     setLoading(true)
@@ -99,17 +125,31 @@ const ModuleForm = () => {
           {modules.length > 0 ? (
             <ul className="space-y-2">
               {modules.map((module) => (
-                <li
-                  key={module.moduleId}
-                  className={`w-40 h-13 p-3 border rounded text-black cursor-pointer transition-colors ${
-                    selectedModule?.moduleId === module.moduleId
-                      ? "bg-blue-100 border-blue-500"
-                      : "hover:bg-gray-50"
-                  }`}
-                  onClick={() => handleModuleClick(module)}
+
+              <li
+                key={module.moduleId}
+                className={`group w-40 h-13 p-3 border rounded text-black cursor-pointer transition-colors flex items-center justify-between relative ${
+                  selectedModule?.moduleId === module.moduleId
+                    ? "bg-blue-100 border-blue-500"
+                    : "hover:bg-gray-50"
+                }`}
+                onClick={() => handleModuleClick(module)}
+              >
+                <h3 className="font-medium">{module.moduleName}</h3>
+
+                {/* Delete icon shown on hover */}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation() // prevent triggering select
+                    setShowModuleDeletion(true)
+                  }}
+                  className="text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                  title="Supprimer le module"
                 >
-                  <h3 className="font-medium">{module.moduleName}</h3>
-                </li>
+                  <MinusCircle size={20} />
+                </button>
+              </li>
               ))}
               <li>
                 <button
@@ -155,7 +195,47 @@ const ModuleForm = () => {
               </div>
             </div>
           ) : (
-            <p className="text-gray-500">Aucun module sélectionné</p>
+            <p className="text-gray-500"></p>
+          )}
+
+          {showModuleDeletion && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center">
+            <div
+              className="absolute inset-0 backdrop-blur-sm"
+              onClick={() => {
+                setSelectedModule(null)
+                setShowModuleCreation(false)
+              }}
+            ></div>
+
+            <div className="fixed inset-0 z-50 flex items-center justify-center">
+              <div className="absolute inset-0 bg-black/50" onClick={() => setShowModuleDeletion(false)}></div>
+                <div className="bg-white p-6 rounded-lg shadow-lg relative w-full max-w-md z-10">
+                  <h2 className="text-xl text-black font-bold mb-4">Supprimer le module</h2>
+                  <p className="text-black">Es-tu sûr de vouloir supprimer ce module ?</p>
+                  <div className="mt-4 flex justify-end gap-2">
+                    <button
+                      onClick={() => setShowModuleDeletion(false)}
+                      className="px-4 py-2 bg-gray-300 text-black rounded hover:bg-gray-400 transition-colors"
+                    >
+                      Annuler
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (selectedModule) {
+                          removeModule(selectedModule.moduleId)
+                          setSelectedModule(null) // clear selection if deleted
+                        }
+                        setShowModuleDeletion(false)
+                      }}
+                      className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+                    >
+                      Supprimer
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           )}
         </div>
       </div>
