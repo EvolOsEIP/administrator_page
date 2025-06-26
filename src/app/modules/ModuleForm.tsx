@@ -49,6 +49,10 @@ const ModuleForm = () => {
   }, [])
 
   const handleModuleClick = (module: Module) => {
+    if (selectedModule?.moduleId === module.moduleId) {
+      setSelectedModule(null) // Deselect if already selected
+      return
+    }
     setSelectedModule(module)
     console.log("Selected Module:", module.moduleId)
   }
