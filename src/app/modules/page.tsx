@@ -1,4 +1,4 @@
-import ModuleForm from "../components/ModuleForm";
+import ModuleForm from "./ModuleForm";
 import { LayoutWithNavbar } from "../components/layout-with-navbar";
 
 export default function Page() {
