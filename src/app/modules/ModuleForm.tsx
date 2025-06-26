@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import CourseForm from "./CourseForm"
 import ModuleCreation from "./ModuleCreation"
+import ModuleContent from "./ModuleContent"
 import { MinusCircle } from "lucide-react"
 
 interface Module {
@@ -14,10 +15,19 @@ const Modal = ({ selectedModule, showModuleCreation, setShowModuleCreation, getM
   return (
     <div className="bg-white p-6 rounded-lg shadow-lg relative w-full">
       {selectedModule ? (
-        <CourseForm
-          moduleName={selectedModule.moduleName}
+
+        <ModuleContent
+          onClose={() => {
+            setShowModuleCreation(false)
+            getModules()
+          }}
           moduleId={selectedModule.moduleId}
+          moduleName={selectedModule.moduleName}
         />
+       // <CourseForm
+       //   moduleName={selectedModule.moduleName}
+       //   moduleId={selectedModule.moduleId}
+       // />
       ) : (
         <p className="text-gray-500">Aucun module sélectionné</p>
       )}
