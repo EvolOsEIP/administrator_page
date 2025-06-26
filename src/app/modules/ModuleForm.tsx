@@ -9,6 +9,30 @@ interface Module {
   moduleName: string
 }
 
+const Modal = ({ selectedModule, showModuleCreation, setShowModuleCreation, getModules }) => {
+  return (
+    <div className="bg-white p-6 rounded-lg shadow-lg relative w-full">
+      {selectedModule ? (
+        <CourseForm
+          moduleName={selectedModule.moduleName}
+          moduleId={selectedModule.moduleId}
+        />
+      ) : (
+        <p className="text-gray-500">Aucun module sélectionné</p>
+      )}
+
+      {showModuleCreation && (
+        <ModuleCreation
+          onClose={() => {
+            setShowModuleCreation(false)
+            getModules()
+          }}
+        />
+      )}
+    </div>
+  )
+}
+
 const ModuleForm = () => {
   const [modules, setModules] = useState<Module[]>([])
   const [loading, setLoading] = useState(false)
@@ -29,12 +53,9 @@ const ModuleForm = () => {
         },
       })
 
-      if (!res.ok) {
-        throw new Error("Network response was not ok")
-      }
+      if (!res.ok) throw new Error("Network response was not ok")
 
       const data = await res.json()
-      console.log("Modules:", data)
       setModules(data)
     } catch (error) {
       console.error("There has been a problem with your fetch operation:", error)
@@ -51,10 +72,9 @@ const ModuleForm = () => {
   const handleModuleClick = (module: Module) => {
     if (selectedModule?.moduleId === module.moduleId) {
       setSelectedModule(null) // Deselect if already selected
-      return
+    } else {
+      setSelectedModule(module)
     }
-    setSelectedModule(module)
-    console.log("Selected Module:", module.moduleId)
   }
 
   return (
@@ -73,8 +93,8 @@ const ModuleForm = () => {
 
       {error && <div className="text-red-500 mb-4">{error}</div>}
 
-
       <div className="flex gap-6 relative min-h-[400px]">
+        {/* Sidebar: Modules List */}
         <div className="md:w-1/3">
           {modules.length > 0 ? (
             <ul className="space-y-2">
@@ -95,8 +115,8 @@ const ModuleForm = () => {
                 <button
                   className="w-40 p-3 border rounded bg-green-500 text-white hover:bg-green-600 transition-colors"
                   onClick={() => {
-                    setShowModuleCreation(true);
-                    setSelectedModule(null);
+                    setShowModuleCreation(true)
+                    setSelectedModule(null)
                   }}
                 >
                   Create New Module
@@ -110,22 +130,32 @@ const ModuleForm = () => {
           )}
         </div>
 
+        {/* Main Panel: Course Form or Module Creation */}
+
         <div className="flex items-center justify-center md:w-2/3">
-          {selectedModule ? (
-            <CourseForm
-              moduleName={selectedModule.moduleName}
-              moduleId={selectedModule.moduleId}
-            />
+          {(selectedModule || showModuleCreation) ? (
+            <div className="fixed inset-0 z-50 flex items-center justify-center">
+              {/* Backdrop */}
+              <div
+                className="absolute inset-0 backdrop-blur-sm"
+                onClick={() => {
+                  setSelectedModule(null)
+                  setShowModuleCreation(false)
+                }}
+              ></div>
+
+              {/* Modal Content */}
+              <div className="relative z-10 w-[90%] max-w-4xl">
+                <Modal
+                  selectedModule={selectedModule}
+                  showModuleCreation={showModuleCreation}
+                  setShowModuleCreation={setShowModuleCreation}
+                  getModules={getModules}
+                />
+              </div>
+            </div>
           ) : (
-            <p className="text-white">No module selected</p>
-          )}
-          {showModuleCreation && (
-            <ModuleCreation
-              onClose={() => {
-                setShowModuleCreation(false);
-                getModules();
-              }}
-            />
+            <p className="text-gray-500">Aucun module sélectionné</p>
           )}
         </div>
       </div>
