@@ -148,7 +148,7 @@ const ModuleForm = () => {
                 }`}
                 onClick={() => handleModuleClick(module)}
               >
-                <h3 className="font-medium">{module.moduleName}</h3>
+                <h3 className="font-medium truncate overflow-hidden text-ellipsis whitespace-nowrap">{module.moduleName}</h3>
 
                 {/* Delete icon shown on hover */}
                 <button
