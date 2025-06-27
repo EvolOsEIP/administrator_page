@@ -49,14 +49,14 @@ const ModuleForm = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [selectedModule, setSelectedModule] = useState<Module | null>(null)
+  const [deleteModule, setDeleteModule] = useState<Module | null>(null)
   const [showModuleCreation, setShowModuleCreation] = useState(false)
-  const [showModuleDeletion, setShowModuleDeletion] = useState(false)
 
   const removeModule = async (moduleId: number) => {
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_HOST_URL}/api/roadmap/${moduleId}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_HOST_URL}/api/modules/${moduleId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -67,6 +67,8 @@ const ModuleForm = () => {
       if (!res.ok) throw new Error("Network response was not ok")
 
       // Refresh modules after deletion
+      console.log(`Deleting module with ID: ${moduleId}`)
+      console.log("Response status:", res.status)
       getModules()
     } catch (error) {
       console.error("There has been a problem with your fetch operation:", error)
@@ -74,6 +76,7 @@ const ModuleForm = () => {
     } finally {
       setLoading(false)
     }
+    alert("Module deleted successfully")
   }
 
   const getModules = async () => {
@@ -152,7 +155,7 @@ const ModuleForm = () => {
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation() // prevent triggering select
-                    setShowModuleDeletion(true)
+                    setDeleteModule(module)
                   }}
                   className="text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
                   title="Supprimer le module"
@@ -208,7 +211,7 @@ const ModuleForm = () => {
             <p className="text-gray-500"></p>
           )}
 
-          {showModuleDeletion && (
+          {deleteModule && (
             <div className="fixed inset-0 z-50 flex items-center justify-center">
             <div
               className="absolute inset-0 backdrop-blur-sm"
@@ -225,7 +228,7 @@ const ModuleForm = () => {
                   <p className="text-black">Es-tu sûr de vouloir supprimer ce module ?</p>
                   <div className="mt-4 flex justify-end gap-2">
                     <button
-                      onClick={() => setShowModuleDeletion(false)}
+                      onClick={() => setDeleteModule(null)}
                       className="px-4 py-2 bg-gray-300 text-black rounded hover:bg-gray-400 transition-colors"
                     >
                       Annuler
@@ -233,10 +236,10 @@ const ModuleForm = () => {
                     <button
                       onClick={() => {
                         if (selectedModule) {
-                          removeModule(selectedModule.moduleId)
                           setSelectedModule(null) // clear selection if deleted
                         }
-                        setShowModuleDeletion(false)
+                        removeModule(deleteModule.moduleId)
+                        setDeleteModule(null)
                       }}
                       className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
                     >
