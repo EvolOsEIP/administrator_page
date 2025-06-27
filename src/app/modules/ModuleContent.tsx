@@ -45,7 +45,10 @@ const ModuleContent = ({ onClose, moduleId, moduleName }: ModuleContentProps) =>
   return (
     <div className="flex flex-col h-[600px] w-full bg-white rounded shadow">
       {isCreatingCourse ? (
-        <CourseForm moduleName={moduleName} moduleId={moduleId} />
+        <CourseForm moduleName={moduleName} moduleId={moduleId} onCourseCreated={() => {
+          setIsCreatingCourse(false);
+          getCourses(moduleId).then(setCourses).catch(console.error);
+        }} />
       ) : (
         <>
           {/* Fixed Header */}
@@ -60,11 +63,11 @@ const ModuleContent = ({ onClose, moduleId, moduleName }: ModuleContentProps) =>
                 key={index}
                 className="flex items-center justify-between p-4 bg-gray-100 border-b mb-2 last:border-b-0 cursor-pointer hover:bg-gray-200"
               >
-                <h2 className="text-lg font-semibold text-black">Cours {index + 1}</h2>
+                <h2 className="text-lg font-semibold text-black">{course.title}</h2>
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    console.log("Removing course:", course.name);
+                    console.log("Removing course:", course.title);
                   }}
                   className="text-red-500 hover:text-red-700 cursor-pointer"
                 >

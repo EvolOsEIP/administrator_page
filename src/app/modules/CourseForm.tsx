@@ -5,7 +5,8 @@ import SubmitButton from './SubmitButton';
 
 const CourseForm = ({
   moduleName,
-  moduleId
+  moduleId,
+  onCourseCreated
 }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -101,6 +102,7 @@ const CourseForm = ({
     .then ((res) => {
       if (res.ok) {
         alert("Course created successfully!");
+        onCourseCreated(); // Call the callback to notify parent component
       }
       else {
         alert("Error creating course.");
