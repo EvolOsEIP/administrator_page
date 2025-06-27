@@ -11,6 +11,8 @@ interface ModuleContentProps {
 const ModuleContent = ({ onClose, moduleId, moduleName }: ModuleContentProps) => {
   const [courses, setCourses] = useState([]);
   const [isCreatingCourse, setIsCreatingCourse] = useState(false);
+  const [isDeletingCourse, setIsDeletingCourse] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState(null);
 
   const getCourses = async (moduleId: string) => {
     const res = await fetch(`${process.env.NEXT_PUBLIC_HOST_URL}/api/modules/${moduleId}/courses`, {
@@ -26,6 +28,23 @@ const ModuleContent = ({ onClose, moduleId, moduleName }: ModuleContentProps) =>
       throw new Error("Network response was not ok");
     }
 
+    return await res.json();
+  };
+
+  const deleteCourse = async (courseId: string) => {
+    console.log("Deleting course with ID:", courseId);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_HOST_URL}/api/courses/me/${courseId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
+      },
+    });
+    if (!res.ok) {
+      console.error("Error deleting course "+ courseId);
+      throw new Error("Network response was not ok");
+    }
+    console.log("Course deleted successfully");
     return await res.json();
   };
 
@@ -67,7 +86,9 @@ const ModuleContent = ({ onClose, moduleId, moduleName }: ModuleContentProps) =>
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    console.log("Removing course:", course.title);
+                    console.log("Removing course:", course);
+                    setIsDeletingCourse(true);
+                    setSelectedCourse(course);
                   }}
                   className="text-red-500 hover:text-red-700 cursor-pointer"
                 >
@@ -89,6 +110,52 @@ const ModuleContent = ({ onClose, moduleId, moduleName }: ModuleContentProps) =>
 
           {/* Footer / Optional content */}
           <div className="p-4 border-t bg-gray-100"></div>
+
+        {isDeletingCourse && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center">
+            <div
+              className="absolute inset-0 backdrop-blur-sm"
+              onClick={() => {
+                setSelectedModule(null)
+                setShowModuleCreation(false)
+              }}
+            ></div>
+
+            <div className="fixed inset-0 z-50 flex items-center justify-center">
+              <div className="absolute inset-0 bg-black/50" onClick={() => setIsDeletingCourse(false)}></div>
+                <div className="bg-white p-6 rounded-lg shadow-lg relative w-full max-w-md z-10">
+                  <h2 className="text-xl text-black font-bold mb-4">Supprimer le cours</h2>
+                  <p className="text-black">Es-tu sûr de vouloir supprimer ce cours ?</p>
+                  <div className="mt-4 flex justify-end gap-2">
+                    <button
+                      onClick={() => setIsDeletingCourse(false)}
+                      className="px-4 py-2 bg-gray-300 text-black rounded hover:bg-gray-400 transition-colors"
+                    >
+                      Annuler
+                    </button>
+                    <button
+                      onClick={() => {
+                        console.log("Deleting course with ID:", selectedCourse.courseid);
+                        deleteCourse(selectedCourse.courseid)
+                          .then(() => {
+                            setIsDeletingCourse(false);
+                            setSelectedCourse(null);
+                            console.log("Course selected for deletion:", selectedCourse);
+                            getCourses(moduleId).then(setCourses).catch(console.error);
+                          })
+                          .catch((error) => {
+                            console.error("Error deleting course:", error);
+                          });
+                      }}
+                      className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+                    >
+                      Supprimer
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </>
       )}
     </div>
