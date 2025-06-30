@@ -4,21 +4,38 @@ interface LoginProps {
   setIsLoggedIn: (value: boolean) => void;
 }
 
-const Login: React.FC<LoginProps> = ({ setIsLoggedIn }) => {
+const Login: React.FC<LoginProps> = ({}) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    setIsLoggedIn(true); // Set logged-in state to true
-    // Basic mock check (replace with your real API)
-   // if (email === "admin@example.com" && password === "password") {
-   //   alert("Login successful!");
-   //   setIsLoggedIn(true);
-   // } else {
-   //   alert("Invalid credentials");
-   // }
+    const res = await fetch(`${process.env.NEXT_PUBLIC_HOST_URL}/auth/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+      }),
+    }).then((response) => {
+      if (!response.ok) {
+        alert('Failed to login. Please try again.', response.statusText);
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    }
+    ).catch((error) => {
+      console.error('There was a problem with the fetch operation:', error);
+    });
+    if (!res || !res.token) {
+      alert('Login failed. Please check your credentials.');
+      return;
+    }
+    localStorage.setItem('token', res.token); // Store token in local storage
+    console.log("Login successful, token stored:", res.token);
+    // setIsLoggedIn(true); // Set logged-in state to true
   };
 
   return (
@@ -55,6 +72,7 @@ const Login: React.FC<LoginProps> = ({ setIsLoggedIn }) => {
 
         <button
           type="submit"
+          onClick={handleSubmit}
           className="w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
         >
           Log In

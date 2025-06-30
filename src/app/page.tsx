@@ -99,8 +99,6 @@ export default function Home() {
     getUser();
   }, []);
 
-
-
 return (
   <div>
     {isLoggedIn ? (
