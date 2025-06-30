@@ -70,31 +70,30 @@ const EvaluationForm = ({ moduleName, moduleId }: EvalutaionFormProps) => {
             "evaluationId": 1,
             "moduleId": moduleId,
             "title": "Introduction to Digital Literacy",
+            "assistantDiag": {},
             "description": "Learn the basics of using a digital device.",
             "instruction": "Follow the instructions to get started.",
-            "evaluationLevel": "eclaireur",
-            "steps": [
-                {
-                    "title": "step 1",
-                    "stepid": 1,
-                    "widgets": {
-                        "actions": [
-                            {
-                                "data": "je veux ca et pas autre chose.",
-                                "type": "input_text",
-                                "description": "jattends que tu écrives ${expected_value} ici"
-                            }
-                        ],
-                        "instructions": [{
-                            "type": "image",
-                            "description": "cette image montre un singe qui se pendouille 1",
-                            "expected_value": "unNaffaire.png"
-                            }
-                        ]
-                    },
-                    "instruction": "blabla 1"
-                }
-            ]
+            "Steps": [{
+              "title": "step 1",
+              "stepid": 1,
+              "type": "evaluation",
+              "widgets": {
+                "actions": [
+                  {
+                    "data": "je veux ca et pas autre chose.",
+                      "type": "input_text",
+                      "description": "jattends que tu écrives ${expected_value} ici"
+                    }
+                  ],
+                  "instructions": [{
+                    "type": "image",
+                    "description": "cette image montre un singe qui se pendouille 1",
+                    "expected_value": "unNaffaire.png"
+                  }
+                ]
+              },
+              "instruction": "blabla 1"
+            }]
           }]
       }),
     }).then((response) => {
@@ -111,10 +110,7 @@ const EvaluationForm = ({ moduleName, moduleId }: EvalutaionFormProps) => {
 
   return (
     <div className="flex items-center justify-center">
-      <form className="max-w-4xl mx-auto p-6 bg-white rounded shadow-md space-y-6" onSubmit={(e) => {
-        e.preventDefault();
-        createEval();
-      }}>
+      <form className="max-w-4xl mx-auto p-6 bg-white rounded shadow-md space-y-6" >
         <h1 className="text-2xl font-bold mb-4 text-black">{moduleName}</h1>
         <EvalHeader
           title={title}
@@ -130,6 +126,7 @@ const EvaluationForm = ({ moduleName, moduleId }: EvalutaionFormProps) => {
           setSteps={setSteps}
         />
         <SubmitButton
+          onClick={createEval}
         />
       </form>
     </div>
