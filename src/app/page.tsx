@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Card from "./components/utils/Card";
 import { LayoutWithNavbar } from "./components/layout-with-navbar";
+import Login from "./components/Login";
 
 const Modal = ({name, id}: { name?: string | null, id?: number | null }) => {
   console.log("Modal rendered with name:", name, "and id:", id);
@@ -61,6 +62,7 @@ export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUserName, setSelectedUserName] = useState<string | null>(null);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     const getUser = async () => {
@@ -97,42 +99,50 @@ export default function Home() {
     getUser();
   }, []);
 
-  return (
-    <div>
-      <LayoutWithNavbar>
-        <div className="p-8">
-          <div className="flex flex-wrap gap-8 gap-x-10 gap-y-10">
-            {Name.map((username, index) => (
-              Id[index] !== undefined && (
-              <Card
-                key={index}
-                title={username}
-                imageSrc="/avatar.jpeg"
-                description="desc"
-                onDelete={() => {
-                  setIsModalOpen(true);
-                  setSelectedUserName(username);
-                  setSelectedUserId(`${Id[index]}`); // Convert to string if needed
-                }}
-                canBeDeleted={true}
-              />
-              )
-            ))}
-          </div>
-        </div>
-      </LayoutWithNavbar>
 
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          {/* Backdrop */}
-          <div
-            className="absolute inset-0 backdrop-blur-sm"
-            onClick={() => setIsModalOpen(false)}
-          />
-          {/* Modal with name and id */}
-          <Modal name={selectedUserName ?? ""} id={selectedUserId} />
-        </div>
-      )}
-    </div>
-  );
+
+return (
+  <div>
+    {isLoggedIn ? (
+      <>
+        <LayoutWithNavbar>
+          <div className="p-8">
+            <div className="flex flex-wrap gap-8 gap-x-10 gap-y-10">
+              {Name.map((username, index) => (
+                Id[index] !== undefined && (
+                  <Card
+                    key={index}
+                    title={username}
+                    imageSrc="/avatar.jpeg"
+                    description="desc"
+                    onDelete={() => {
+                      setIsModalOpen(true);
+                      setSelectedUserName(username);
+                      setSelectedUserId(`${Id[index]}`);
+                    }}
+                    canBeDeleted={true}
+                  />
+                )
+              ))}
+            </div>
+          </div>
+        </LayoutWithNavbar>
+
+        {isModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            {/* Backdrop */}
+            <div
+              className="absolute inset-0 backdrop-blur-sm"
+              onClick={() => setIsModalOpen(false)}
+            />
+            {/* Modal with name and id */}
+            <Modal name={selectedUserName ?? ""} id={selectedUserId} />
+          </div>
+        )}
+      </>
+    ) : (
+      <Login setIsLoggedIn={setIsLoggedIn} />
+    )}
+  </div>
+);
 }
