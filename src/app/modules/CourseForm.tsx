@@ -35,6 +35,7 @@ const CourseForm = ({
     const courseSteps = steps.map((step, index) => ({
       title: `step ${index + 1}`,
       stepIndex: index + 1,
+      type: "course",
       widgets: {
         actions: [
           {
@@ -46,8 +47,8 @@ const CourseForm = ({
         instructions: [
           {
             type: "image",
-            description: "cette image montre un singe qui se pendouille 1",
-            expected_value: "unNaffaire.png" // keep as-is for now
+            description: "cette image montre comment faire",
+            expected_value: "toto.png" // keep as-is for now
           }
         ]
       },
@@ -79,7 +80,7 @@ const CourseForm = ({
       });
     }
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_HOST_URL}/api/courses`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_HOST_URL}/api/modules/content`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -94,7 +95,7 @@ const CourseForm = ({
             description,
             instruction: "Follow the instructions to get started.",
             courseLevel: "eclaireur",
-            courseSteps: courseSteps
+            Steps: courseSteps
           }
         ]
       }),
