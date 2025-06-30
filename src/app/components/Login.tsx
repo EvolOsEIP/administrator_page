@@ -11,13 +11,14 @@ const Login: React.FC<LoginProps> = ({ setIsLoggedIn }) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
+    setIsLoggedIn(true); // Set logged-in state to true
     // Basic mock check (replace with your real API)
-    if (email === "admin@example.com" && password === "password") {
-      alert("Login successful!");
-      setIsLoggedIn(true);
-    } else {
-      alert("Invalid credentials");
-    }
+   // if (email === "admin@example.com" && password === "password") {
+   //   alert("Login successful!");
+   //   setIsLoggedIn(true);
+   // } else {
+   //   alert("Invalid credentials");
+   // }
   };
 
   return (
