@@ -155,8 +155,9 @@ const CourseForm = ({
           setDuration={setDuration}
         />
         <CourseSteps steps={steps} setSteps={setSteps} />
-        <SubmitButton
-          onSubmit={handleSubmit}
+        <SubmitButton onClick={(e) => {
+          handleSubmit(e)
+        }}
         />
       </form>
     </div>

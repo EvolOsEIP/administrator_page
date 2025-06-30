@@ -25,7 +25,10 @@ const ModuleContent = ({ onClose, moduleId, moduleName }: ModuleContentProps) =>
         'Authorization': `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
       },
     });
-
+    if (res.status === 204) {
+      console.log("No courses found for this module");
+      return [];
+    }
     if (!res.ok) {
       console.error("Error fetching courses");
       throw new Error("Network response was not ok");

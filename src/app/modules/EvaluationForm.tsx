@@ -67,7 +67,6 @@ const EvaluationForm = ({ moduleName, moduleId }: EvalutaionFormProps) => {
       body: JSON.stringify({
         "evaluations": [{
             "evaluationIndex": 5,
-            "evaluationId": 1,
             "moduleId": moduleId,
             "title": "Introduction to Digital Literacy",
             "assistantDiag": {},
@@ -125,8 +124,9 @@ const EvaluationForm = ({ moduleName, moduleId }: EvalutaionFormProps) => {
           steps={steps}
           setSteps={setSteps}
         />
-        <SubmitButton
-          onClick={createEval}
+         <SubmitButton onClick={(e) => {
+          createEval()
+        }}
         />
       </form>
     </div>
