@@ -4,29 +4,26 @@ import CourseForm from "./CourseForm";
 import CourseContent from "./CourseContent";
 import EvaluationForm from "./EvaluationForm";
 
-interface Course {
-  courseid: number;
-  title: string;
-}
-
+import RequireAuth from '../components/utils/RequireAuth';
 interface ModuleContentProps {
-  moduleId: number;
+  onClose: () => void;
+  moduleId: string;
   moduleName: string;
 }
 
-const ModuleContent = ({ moduleId, moduleName }: ModuleContentProps) => {
-  const [courses, setCourses] = useState<Course[]>([]);
+const ModuleContent = ({ onClose, moduleId, moduleName }: ModuleContentProps) => {
+  const [courses, setCourses] = useState([]);
   const [isCreatingCourse, setIsCreatingCourse] = useState(false);
   const [isDeletingCourse, setIsDeletingCourse] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+  const [selectedCourse, setSelectedCourse] = useState(null);
   const [isCreatingEvaluation, setIsCreatingEvaluation] = useState(false);
 
-  const getCourses = async (moduleId: number) => {
+  const getCourses = async (moduleId: string) => {
     const res = await fetch(`${process.env.NEXT_PUBLIC_HOST_URL}/api/modules/${moduleId}/courses`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
+        'Authorization': `Bearer ${localStorage.getItem('token')}`, // Use localStorage to get the token
       },
     });
     if (res.status === 204) {
@@ -41,13 +38,13 @@ const ModuleContent = ({ moduleId, moduleName }: ModuleContentProps) => {
     return await res.json();
   };
 
-  const deleteCourse = async (courseId: number) => {
+  const deleteCourse = async (courseId: string) => {
     console.log("Deleting course with ID:", courseId);
     const res = await fetch(`${process.env.NEXT_PUBLIC_HOST_URL}/api/courses/me/${courseId}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
+        'Authorization': `Bearer ${localStorage.getItem('token')}`, // Use localStorage to get the token
       },
     });
     if (!res.ok) {
@@ -72,6 +69,8 @@ const ModuleContent = ({ moduleId, moduleName }: ModuleContentProps) => {
   }, [moduleId]);
 
   return (
+    <>
+    <RequireAuth />
     <div className="flex flex-col h-[600px] w-full bg-white rounded shadow">
       {isCreatingCourse ? (
         <CourseForm moduleName={moduleName} moduleId={moduleId} onCourseCreated={() => {
@@ -79,13 +78,9 @@ const ModuleContent = ({ moduleId, moduleName }: ModuleContentProps) => {
           getCourses(moduleId).then(setCourses).catch(console.error);
         }} />
       ) : (isCreatingEvaluation ? (
-        <EvaluationForm
-          moduleName={moduleName}
-          moduleId={moduleId}
-       // onEvaluationCreated={() => {
-       //   setIsCreatingEvaluation(false);
-       // }}
-        />
+        <EvaluationForm moduleName={moduleName} moduleId={moduleId} onEvaluationCreated={() => {
+          setIsCreatingEvaluation(false);
+        }} />
       ) : (
         <>
           {/* Fixed Header */}
@@ -95,7 +90,7 @@ const ModuleContent = ({ moduleId, moduleName }: ModuleContentProps) => {
 
           {/* Scrollable List */}
           <div className="overflow-y-auto flex-grow">
-            {courses.map((course: { title: string, courseid: number }, index) => (
+            {courses.map((course, index) => (
               <div
                 key={index}
                 className="flex items-center justify-between p-4 bg-gray-100 border-b mb-2 last:border-b-0 cursor-pointer hover:bg-gray-200"
@@ -155,7 +150,8 @@ const ModuleContent = ({ moduleId, moduleName }: ModuleContentProps) => {
             <div
               className="absolute inset-0 backdrop-blur-sm"
               onClick={() => {
-                setSelectedCourse(null)
+                setSelectedModule(null)
+                setShowModuleCreation(false)
               }}
             ></div>
 
@@ -173,8 +169,7 @@ const ModuleContent = ({ moduleId, moduleName }: ModuleContentProps) => {
                     </button>
                     <button
                       onClick={() => {
-                        if (!selectedCourse) return;
-                        console.log("Deleting course with ID: " + selectedCourse.courseid);
+                        console.log("Deleting course with ID:", selectedCourse.courseid);
                         deleteCourse(selectedCourse.courseid)
                           .then(() => {
                             setIsDeletingCourse(false);
@@ -198,6 +193,7 @@ const ModuleContent = ({ moduleId, moduleName }: ModuleContentProps) => {
         </>
       ))}
     </div>
+    </>
   );
 };
 

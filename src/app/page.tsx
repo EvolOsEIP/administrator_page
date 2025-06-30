@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Card from "./components/utils/Card";
 import { LayoutWithNavbar } from "./components/layout-with-navbar";
-import Login from "./components/Login";
+import RequireAuth from "./components/utils/RequireAuth";
 
 const Modal = ({name, id}: { name?: string | null, id?: number | null }) => {
   console.log("Modal rendered with name:", name, "and id:", id);
@@ -13,7 +13,7 @@ const Modal = ({name, id}: { name?: string | null, id?: number | null }) => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Use localStorage to get the token
         },
         body: JSON.stringify({
           unlink: true,
@@ -70,7 +70,7 @@ export default function Home() {
         const res = await fetch(`${process.env.NEXT_PUBLIC_HOST_URL}/api/learners/me`, {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`, // Use localStorage to get the token
           },
         });
 
@@ -100,8 +100,10 @@ export default function Home() {
   }, []);
 
 return (
+  <>
+  <RequireAuth />
   <div>
-    {isLoggedIn ? (
+    {(
       <>
         <LayoutWithNavbar>
           <div className="p-8">
@@ -138,9 +140,8 @@ return (
           </div>
         )}
       </>
-    ) : (
-      <Login setIsLoggedIn={setIsLoggedIn} />
     )}
   </div>
+  </>
 );
 }

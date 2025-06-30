@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import ModuleCreation from "./ModuleCreation"
 import ModuleContent from "./ModuleContent"
 import { MinusCircle } from "lucide-react"
+import RequireAuth from "../components/utils/RequireAuth"
 
 interface Module {
   moduleId: number
@@ -93,7 +94,7 @@ const ModuleForm = () => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Use localStorage to get the token
         },
       })
 
@@ -122,6 +123,8 @@ const ModuleForm = () => {
   }
 
   return (
+    <>
+    <RequireAuth />
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4 text-black">Module Form</h1>
 
@@ -258,6 +261,7 @@ const ModuleForm = () => {
         </div>
       </div>
     </div>
+  </>
   )
 }
 

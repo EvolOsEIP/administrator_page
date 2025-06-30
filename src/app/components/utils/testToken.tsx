@@ -1,11 +1,12 @@
-export default function checkToken() {
+export default async function checkToken() {
   try {
-    const res = fetch(`${localStorage.getItem('token')}/api/test`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_HOST_URL}/auth/test`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     });
+    console.log("res: ", res);
     if (!res.ok) {
       throw new Error("Token is invalid or expired");
     }

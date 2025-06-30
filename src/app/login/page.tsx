@@ -1,41 +1,51 @@
-import React, { useState } from "react";
+"use client";
+import React, { useState, useEffect } from "react";
+import checkToken from "../components/utils/testToken";
 
-interface LoginProps {
-  setIsLoggedIn: (value: boolean) => void;
-}
-
-const Login: React.FC<LoginProps> = ({}) => {
+const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  // Rediriger si déjà connecté (token valide)
+  useEffect(() => {
+    if (checkToken()) {
+      window.location.href = "/"; // mets ici ta route protégée
+    }
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const res = await fetch(`${process.env.NEXT_PUBLIC_HOST_URL}/auth/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password,
-      }),
-    }).then((response) => {
+
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_HOST_URL}/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
       if (!response.ok) {
-        alert('Failed to login. Please try again.', response.statusText);
-        throw new Error('Network response was not ok');
+        alert("Failed to login. Please try again.");
+        return;
       }
-      return response.json();
+
+      const res = await response.json();
+
+      if (!res || !res.token) {
+        alert("Login failed. Please check your credentials.");
+        return;
+      }
+
+      localStorage.setItem("token", res.token);
+      console.log("Login successful, token stored:", res.token);
+
+      if (checkToken()) {
+        window.location.href = "/dashboard"; // redirection après login
+      }
+    } catch (error) {
+      console.error("There was a problem with the fetch operation:", error);
     }
-    ).catch((error) => {
-      console.error('There was a problem with the fetch operation:', error);
-    });
-    if (!res || !res.token) {
-      alert('Login failed. Please check your credentials.');
-      return;
-    }
-    localStorage.setItem('token', res.token); // Store token in local storage
-    console.log("Login successful, token stored:", res.token);
-    // setIsLoggedIn(true); // Set logged-in state to true
   };
 
   return (
@@ -69,10 +79,8 @@ const Login: React.FC<LoginProps> = ({}) => {
             placeholder="********"
           />
         </div>
-
         <button
           type="submit"
-          onClick={handleSubmit}
           className="w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
         >
           Log In
