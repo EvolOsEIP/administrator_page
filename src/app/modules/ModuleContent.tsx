@@ -1,6 +1,8 @@
 import { MinusCircle, CirclePlus } from "lucide-react";
 import { useState, useEffect } from "react";
 import CourseForm from "./CourseForm";
+import CourseContent from "./CourseContent";
+import EvaluationForm from "./EvaluationForm";
 
 interface ModuleContentProps {
   onClose: () => void;
@@ -13,6 +15,7 @@ const ModuleContent = ({ onClose, moduleId, moduleName }: ModuleContentProps) =>
   const [isCreatingCourse, setIsCreatingCourse] = useState(false);
   const [isDeletingCourse, setIsDeletingCourse] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
+  const [isCreatingEvaluation, setIsCreatingEvaluation] = useState(false);
 
   const getCourses = async (moduleId: string) => {
     const res = await fetch(`${process.env.NEXT_PUBLIC_HOST_URL}/api/modules/${moduleId}/courses`, {
@@ -68,6 +71,10 @@ const ModuleContent = ({ onClose, moduleId, moduleName }: ModuleContentProps) =>
           setIsCreatingCourse(false);
           getCourses(moduleId).then(setCourses).catch(console.error);
         }} />
+      ) : (isCreatingEvaluation ? (
+        <EvaluationForm moduleName={moduleName} moduleId={moduleId} onEvaluationCreated={() => {
+          setIsCreatingEvaluation(false);
+        }} />
       ) : (
         <>
           {/* Fixed Header */}
@@ -81,8 +88,12 @@ const ModuleContent = ({ onClose, moduleId, moduleName }: ModuleContentProps) =>
               <div
                 key={index}
                 className="flex items-center justify-between p-4 bg-gray-100 border-b mb-2 last:border-b-0 cursor-pointer hover:bg-gray-200"
+                onClick={() => {
+                  console.log("Selected course:", course);
+                  setSelectedCourse(course);
+                }}
               >
-                <h2 className="text-lg font-semibold text-black">{course.title}</h2>
+                  <h2 className="text-lg font-semibold text-black">{course.title}</h2>
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -106,10 +117,27 @@ const ModuleContent = ({ onClose, moduleId, moduleName }: ModuleContentProps) =>
                 <CirclePlus /> Add New Course
               </span>
             </button>
+            <button
+              onClick={() => {
+                setIsCreatingEvaluation(true);
+              }}
+              className="w-full text-left flex items-center justify-center p-4 bg-gray-100 border-2 border-dashed border-orange-500 mb-2 hover:bg-gray-200 cursor-pointer"
+            >
+              <span className="flex items-center gap-2 text-lg font-semibold text-orange-500">
+                <CirclePlus /> Add New Evaluation
+              </span>
+            </button>
           </div>
 
           {/* Footer / Optional content */}
           <div className="p-4 border-t bg-gray-100"></div>
+
+        {selectedCourse && !isDeletingCourse && (
+          <CourseContent
+            courseId={selectedCourse.courseid}
+            courseTitle={selectedCourse.title}
+          />
+        )}
 
         {isDeletingCourse && (
             <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -157,7 +185,7 @@ const ModuleContent = ({ onClose, moduleId, moduleName }: ModuleContentProps) =>
             </div>
           )}
         </>
-      )}
+      ))}
     </div>
   );
 };
