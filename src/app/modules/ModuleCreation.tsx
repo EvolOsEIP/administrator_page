@@ -1,18 +1,17 @@
-import React, { useState } from 'react';
 
 interface ModuleCreationProps {
   onClose: () => void;
 }
 
-const ModuleCreation = ({ onClose }) => {
-  const [title, setTitle] = useState('');
-  const [level, setLevel] = useState('');
+const ModuleCreation = ({ onClose }: ModuleCreationProps) => {
 
   const createModule = async (e: React.FormEvent) => {
     e.preventDefault();
-    const form = e.currentTarget;
-    const title = form.title.value;
-    const level = form.level.value.toLowerCase();
+    const form = e.currentTarget as HTMLFormElement;
+    const title = form.elements.namedItem('title') as HTMLInputElement | null;
+    const level = form.elements.namedItem('level') as HTMLSelectElement | null;
+
+    if (!title || !level || !title.value || !level.value) return;
 
     const response = await fetch(`${process.env.NEXT_PUBLIC_HOST_URL}/api/modules`, {
       method: 'POST',
@@ -21,8 +20,8 @@ const ModuleCreation = ({ onClose }) => {
         'Authorization': `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
       },
       body: JSON.stringify({
-        name: title,
-        levelRequired: level,
+        name: title.value.trim(),
+        levelRequired: level.value.toLowerCase(),
       }),
     });
 
@@ -44,7 +43,7 @@ const ModuleCreation = ({ onClose }) => {
           id="title"
           placeholder="ex: Les caractères spéciaux"
           className="w-full p-2 rounded bg-gray-600 text-white placeholder-gray-300"
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={(e) => e.target.value = e.target.value.trim()}
         />
       </div>
       <div>
@@ -53,7 +52,7 @@ const ModuleCreation = ({ onClose }) => {
           id="level"
           className="w-full p-2 rounded bg-gray-600 text-white"
           defaultValue=""
-          onChange={(e) => setLevel(e.target.value)}
+          onChange={(e) => e.target.value = e.target.value.trim()}
         >
           <option value="">Sélectionner un niveau</option>
           <option value="eclaireur">Eclaireur</option>

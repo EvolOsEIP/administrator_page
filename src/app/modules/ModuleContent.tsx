@@ -4,20 +4,24 @@ import CourseForm from "./CourseForm";
 import CourseContent from "./CourseContent";
 import EvaluationForm from "./EvaluationForm";
 
+interface Course {
+  courseid: number;
+  title: string;
+}
+
 interface ModuleContentProps {
-  onClose: () => void;
-  moduleId: string;
+  moduleId: number;
   moduleName: string;
 }
 
-const ModuleContent = ({ onClose, moduleId, moduleName }: ModuleContentProps) => {
-  const [courses, setCourses] = useState([]);
+const ModuleContent = ({ moduleId, moduleName }: ModuleContentProps) => {
+  const [courses, setCourses] = useState<Course[]>([]);
   const [isCreatingCourse, setIsCreatingCourse] = useState(false);
   const [isDeletingCourse, setIsDeletingCourse] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState(null);
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
   const [isCreatingEvaluation, setIsCreatingEvaluation] = useState(false);
 
-  const getCourses = async (moduleId: string) => {
+  const getCourses = async (moduleId: number) => {
     const res = await fetch(`${process.env.NEXT_PUBLIC_HOST_URL}/api/modules/${moduleId}/courses`, {
       method: 'GET',
       headers: {
@@ -37,7 +41,7 @@ const ModuleContent = ({ onClose, moduleId, moduleName }: ModuleContentProps) =>
     return await res.json();
   };
 
-  const deleteCourse = async (courseId: string) => {
+  const deleteCourse = async (courseId: number) => {
     console.log("Deleting course with ID:", courseId);
     const res = await fetch(`${process.env.NEXT_PUBLIC_HOST_URL}/api/courses/me/${courseId}`, {
       method: 'DELETE',
@@ -75,9 +79,13 @@ const ModuleContent = ({ onClose, moduleId, moduleName }: ModuleContentProps) =>
           getCourses(moduleId).then(setCourses).catch(console.error);
         }} />
       ) : (isCreatingEvaluation ? (
-        <EvaluationForm moduleName={moduleName} moduleId={moduleId} onEvaluationCreated={() => {
-          setIsCreatingEvaluation(false);
-        }} />
+        <EvaluationForm
+          moduleName={moduleName}
+          moduleId={moduleId}
+       // onEvaluationCreated={() => {
+       //   setIsCreatingEvaluation(false);
+       // }}
+        />
       ) : (
         <>
           {/* Fixed Header */}
@@ -87,7 +95,7 @@ const ModuleContent = ({ onClose, moduleId, moduleName }: ModuleContentProps) =>
 
           {/* Scrollable List */}
           <div className="overflow-y-auto flex-grow">
-            {courses.map((course, index) => (
+            {courses.map((course: { title: string, courseid: number }, index) => (
               <div
                 key={index}
                 className="flex items-center justify-between p-4 bg-gray-100 border-b mb-2 last:border-b-0 cursor-pointer hover:bg-gray-200"
@@ -147,8 +155,7 @@ const ModuleContent = ({ onClose, moduleId, moduleName }: ModuleContentProps) =>
             <div
               className="absolute inset-0 backdrop-blur-sm"
               onClick={() => {
-                setSelectedModule(null)
-                setShowModuleCreation(false)
+                setSelectedCourse(null)
               }}
             ></div>
 
@@ -166,7 +173,8 @@ const ModuleContent = ({ onClose, moduleId, moduleName }: ModuleContentProps) =>
                     </button>
                     <button
                       onClick={() => {
-                        console.log("Deleting course with ID:", selectedCourse.courseid);
+                        if (!selectedCourse) return;
+                        console.log("Deleting course with ID: " + selectedCourse.courseid);
                         deleteCourse(selectedCourse.courseid)
                           .then(() => {
                             setIsDeletingCourse(false);

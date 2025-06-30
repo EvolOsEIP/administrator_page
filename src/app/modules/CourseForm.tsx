@@ -3,22 +3,28 @@ import CourseHeader from './CourseHeader';
 import CourseSteps from './CourseSteps';
 import SubmitButton from './SubmitButton';
 
+interface CourseFormProps {
+  moduleName: string;
+  moduleId: number;
+  onCourseCreated: () => void;
+}
+
 const CourseForm = ({
   moduleName,
   moduleId,
   onCourseCreated
-}) => {
+}: CourseFormProps) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [duration, setDuration] = useState('');
+  const [duration, setDuration] = useState<number>(0);
   const [steps, setSteps] = useState([
-    { instruction: '', expectedAnswer: '', image: null as File | null }
+    { instruction: '', expectedAnswer: '', image: null as File | null, isOpen: true },
   ]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const isStepValid = (step) =>
+    const isStepValid = (step: { instruction: string; expectedAnswer: string; image: File | null }) =>
       step.instruction.trim() !== "" && step.expectedAnswer.trim() !== "";
 
     if (!title.trim() || !description.trim() || steps.some(step => !isStepValid(step))) {
@@ -33,7 +39,7 @@ const CourseForm = ({
 
     const uploadedSteps = await Promise.all(
       steps.map(async (step) => {
-        let uploadedImageName = "";
+        const uploadedImageName = "";
 
         if (step.image) {
           const formData = new FormData();
@@ -101,7 +107,7 @@ const CourseForm = ({
 
       if (moduleRes.ok) {
         const data = await moduleRes.json();
-        const currentModule = data.find((mod) => mod.moduleId === moduleId);
+        const currentModule = data.find((mod: { moduleId: number }) => mod.moduleId === moduleId);
         courseIndex = currentModule ? currentModule.courses.length + 1 : 1;
       } else {
         throw new Error("Failed to fetch module data");
@@ -150,7 +156,7 @@ const CourseForm = ({
           setTitle={setTitle}
           description={description}
           setDescription={setDescription}
-          module={moduleName}
+          //module={moduleName}
           duration={duration}
           setDuration={setDuration}
         />

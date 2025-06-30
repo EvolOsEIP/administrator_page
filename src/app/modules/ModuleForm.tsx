@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import CourseForm from "./CourseForm"
 import ModuleCreation from "./ModuleCreation"
 import ModuleContent from "./ModuleContent"
 import { MinusCircle } from "lucide-react"
@@ -11,16 +10,22 @@ interface Module {
   moduleName: string
 }
 
-const Modal = ({ selectedModule, showModuleCreation, setShowModuleCreation, getModules }) => {
+interface ModalProps {
+  selectedModule: Module | null
+  showModuleCreation: boolean
+  setShowModuleCreation: (show: boolean) => void
+  getModules: () => void
+}
+
+const Modal = ({ selectedModule,
+               showModuleCreation,
+               setShowModuleCreation,
+               getModules }: ModalProps) => {
   return (
     <div className="bg-white p-6 rounded-lg shadow-lg relative w-full">
       {selectedModule ? (
 
         <ModuleContent
-          onClose={() => {
-            setShowModuleCreation(false)
-            getModules()
-          }}
           moduleId={selectedModule.moduleId}
           moduleName={selectedModule.moduleName}
         />
@@ -222,7 +227,7 @@ const ModuleForm = () => {
             ></div>
 
             <div className="fixed inset-0 z-50 flex items-center justify-center">
-              <div className="absolute inset-0 bg-black/50" onClick={() => setShowModuleDeletion(false)}></div>
+              <div className="absolute inset-0 bg-black/50" onClick={() => setDeleteModule(null)}></div>
                 <div className="bg-white p-6 rounded-lg shadow-lg relative w-full max-w-md z-10">
                   <h2 className="text-xl text-black font-bold mb-4">Supprimer le module</h2>
                   <p className="text-black">Es-tu sûr de vouloir supprimer ce module ?</p>

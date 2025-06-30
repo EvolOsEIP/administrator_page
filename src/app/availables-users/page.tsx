@@ -44,8 +44,12 @@ const Modal = ({name, id}: { name?: string | null, id?: number | null }) => {
         <button
           className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
           onClick={() => {
-            addUser(id)
-            window.location.reload();
+            if (id !== null && id !== undefined) {
+              addUser(id)
+              window.location.reload();
+            } else {
+              console.error("User ID is null, cannot add user.");
+            }
           }}
         >
           Ajouter

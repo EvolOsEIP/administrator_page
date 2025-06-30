@@ -61,7 +61,7 @@ export default function Home() {
   const [Id, setUserArrayId] = useState<number[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUserName, setSelectedUserName] = useState<string | null>(null);
-  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
@@ -118,7 +118,7 @@ return (
                     onDelete={() => {
                       setIsModalOpen(true);
                       setSelectedUserName(username);
-                      setSelectedUserId(`${Id[index]}`);
+                      setSelectedUserId(Id[index]);
                     }}
                     canBeDeleted={true}
                   />
