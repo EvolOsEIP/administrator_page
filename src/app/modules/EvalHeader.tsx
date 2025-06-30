@@ -1,5 +1,14 @@
-
 import React from 'react';
+
+interface EvalHeaderProps {
+  title: string;
+  setTitle: (title: string) => void;
+  description: string;
+  setDescription: (description: string) => void;
+  module?: string;
+  duration: number;
+  setDuration: (duration: number) => void;
+}
 
 const EvalHeader = ({
   title,
@@ -7,10 +16,9 @@ const EvalHeader = ({
   description,
   setDescription,
   module,
-  //setModule,
   duration,
   setDuration
-}) => {
+}: EvalHeaderProps) => {
   return (
     <div className="grid grid-cols-2 gap-4">
       <div>
@@ -45,7 +53,6 @@ const EvalHeader = ({
             id="duration"
             className="w-20 p-2 rounded bg-gray-600 text-white mr-2"
             placeholder="5"
-            value={duration}
             onChange={(e) => setDuration(Number(e.target.value))}
           />
           <span className="text-gray-700 mt-2">minutes (optionel)</span>
