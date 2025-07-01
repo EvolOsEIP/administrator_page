@@ -2,7 +2,10 @@ import { useState } from 'react';
 import EvalSteps from './EvalSteps';
 import EvalHeader from './EvalHeader';
 import SubmitButton from './SubmitButton';
+
 import RequireAuth from '../components/utils/RequireAuth';
+
+import { getEvaluation, createEval } from '../components/utils/eval';
 
 interface EvalutaionFormProps {
   moduleName: string;
@@ -16,64 +19,6 @@ const EvaluationForm = ({ moduleName, moduleId }: EvalutaionFormProps) => {
   const [steps, setSteps] = useState([
     { instruction: '', expectedAnswer: '', image: null as File | null, isOpen: true }
   ])
-
-  const createEval = async () => {
-    if (!title || !description || !moduleName) {
-      alert('Please fill in all fields');
-      return;
-    }
-    const res = await fetch(`${process.env.NEXT_PUBLIC_HOST_URL}/api/modules/content`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`
-      },
-      body: JSON.stringify({
-        "evaluations": [{
-            "evaluationIndex": 5,
-            "moduleId": moduleId,
-            "title": "Introduction to Digital Literacy",
-            "assistantDiag": {},
-            "description": "Learn the basics of using a digital device.",
-            "instruction": "Follow the instructions to get started.",
-            "Steps": [{
-              "title": "step 1",
-              "stepid": 1,
-              "type": "evaluation",
-              "widgets": {
-                "actions": [
-                  {
-                    "data": "je veux ca et pas autre chose.",
-                      "type": "input_text",
-                      "description": "jattends que tu écrives ${expected_value} ici"
-                    }
-                  ],
-                  "instructions": [{
-                    "type": "image",
-                    "description": "cette image montre un singe qui se pendouille 1",
-                    "expected_value": "unNaffaire.png"
-                  }
-                ]
-              },
-              "instruction": "blabla 1"
-            }]
-          }]
-      }),
-    }).then((response) => {
-      if (!response.ok) {
-        alert('Failed to create evaluation. Please try again. ' + response.statusText);
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    }
-    ).catch((error) => {
-      console.error('There was a problem with the fetch operation:', error);
-    });
-
-    if (res) {
-      alert('Evaluation created successfully!');
-    }
-  }
 
   return (
     <>
@@ -94,8 +39,8 @@ const EvaluationForm = ({ moduleName, moduleId }: EvalutaionFormProps) => {
           steps={steps}
           setSteps={setSteps}
         />
-         <SubmitButton onClick={() => {
-          createEval()
+         <SubmitButton onClick={(e) => {
+          createEval(moduleId, moduleName, title, description, steps)
         }}
         />
       </form>
