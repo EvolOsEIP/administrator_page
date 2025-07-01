@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import Card from "./components/utils/Card";
 import { LayoutWithNavbar } from "./components/layout-with-navbar";
-import Login from "./components/Login";
+import RequireAuth from "./components/utils/RequireAuth";
+import checkLogin from "./components/utils/CheckLogin";
 
 const Modal = ({name, id}: { name?: string | null, id?: number | null }) => {
   console.log("Modal rendered with name:", name, "and id:", id);
@@ -13,7 +14,7 @@ const Modal = ({name, id}: { name?: string | null, id?: number | null }) => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Use localStorage to get the token
         },
         body: JSON.stringify({
           unlink: true,
@@ -29,6 +30,8 @@ const Modal = ({name, id}: { name?: string | null, id?: number | null }) => {
     }
   }
   return (
+  <>
+  <RequireAuth />
     <div className="bg-white p-6 rounded-lg shadow-lg relative">
       <h2 className="text-xl font-semibold mb-4 text-black">Supprimer {name}?</h2>
       <p className="mb-4 text-black">Voulez-vous vraiment supprimer cet utilisateur ?</p>
@@ -53,6 +56,7 @@ const Modal = ({name, id}: { name?: string | null, id?: number | null }) => {
         </button>
       </div>
     </div>
+    </>
   );
 }
 
@@ -70,7 +74,7 @@ export default function Home() {
         const res = await fetch(`${process.env.NEXT_PUBLIC_HOST_URL}/api/learners/me`, {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`, // Use localStorage to get the token
           },
         });
 
@@ -95,15 +99,16 @@ export default function Home() {
         console.error("Fetch failed:", error);
       }
     };
-
-    getUser();
+    checkLogin(() =>{
+      getUser();
+    }, undefined);
   }, []);
 
-
-
 return (
+  <>
+  <RequireAuth />
   <div>
-    {isLoggedIn ? (
+    {(
       <>
         <LayoutWithNavbar>
           <div className="p-8">
@@ -140,9 +145,8 @@ return (
           </div>
         )}
       </>
-    ) : (
-      <Login setIsLoggedIn={setIsLoggedIn} />
     )}
   </div>
+  </>
 );
 }

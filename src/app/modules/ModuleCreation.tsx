@@ -1,4 +1,5 @@
 
+import RequireAuth from '../components/utils/RequireAuth';
 interface ModuleCreationProps {
   onClose: () => void;
 }
@@ -17,7 +18,7 @@ const ModuleCreation = ({ onClose }: ModuleCreationProps) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
+        'Authorization': `Bearer ${localStorage.getItem('token')}`, // Use localStorage to get the token
       },
       body: JSON.stringify({
         name: title.value.trim(),
@@ -34,6 +35,8 @@ const ModuleCreation = ({ onClose }: ModuleCreationProps) => {
   }
 
   return (
+    <>
+    <RequireAuth />
     <form className="max-w-4xl mx-auto p-6 bg-white rounded shadow-md space-y-6" onSubmit={createModule}>
     <div className="grid grid-cols-2 gap-4">
       <div>
@@ -71,6 +74,7 @@ const ModuleCreation = ({ onClose }: ModuleCreationProps) => {
       </div>
     </div>
     </form>
+  </>
   );
 };
 

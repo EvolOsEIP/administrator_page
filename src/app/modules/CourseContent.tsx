@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import RequireAuth from '../components/utils/RequireAuth';
 
 interface CourseContentProps {
   courseId: number;
@@ -14,7 +15,7 @@ const CourseContent = ({ courseId, courseTitle }: CourseContentProps) => {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },
       });
       if (!response.ok) {
@@ -33,25 +34,28 @@ const CourseContent = ({ courseId, courseTitle }: CourseContentProps) => {
   }, [courseId]);
 
   return (
-    <div className="flex items-center justify-center">
-      <div>
-        <h1 className="text-xl font-bold text-black">{courseTitle}</h1>
-        <h3 className="text-sm text-gray-500">Course ID: {courseId}</h3>
-      </div>
-      <div className="overflow-y-auto flex-grow">
-      {courseContent.map((course, index) => (
-        <div
-          key={index}
-          className="flex items-center justify-between p-4 bg-gray-100 border-b mb-2 last:border-b-0 cursor-pointer hover:bg-gray-200"
-          onClick={() => {
-          }}
-        >
-
+    <>
+      <RequireAuth/>
+      <div className="flex items-center justify-center">
+        <div>
+          <h1 className="text-xl font-bold text-black">{courseTitle}</h1>
+          <h3 className="text-sm text-gray-500">Course ID: {courseId}</h3>
         </div>
-      ))}
+        <div className="overflow-y-auto flex-grow">
+        {courseContent.map((course, index) => (
+          <div
+            key={index}
+            className="flex items-center justify-between p-4 bg-gray-100 border-b mb-2 last:border-b-0 cursor-pointer hover:bg-gray-200"
+            onClick={() => {
+            }}
+          >
+
+          </div>
+        ))}
+        </div>
       </div>
-    </div>
-  );
+    </> 
+);
 }
 
 export default CourseContent;

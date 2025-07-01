@@ -12,7 +12,7 @@ const Modal = ({name, id}: { name?: string | null, id?: number | null }) => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify({
           unlink: false,
@@ -74,7 +74,7 @@ export default function Home() {
         const res = await fetch(`${process.env.NEXT_PUBLIC_HOST_URL}/api/learners/available`, {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
 

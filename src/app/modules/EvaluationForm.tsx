@@ -2,6 +2,9 @@ import { useState } from 'react';
 import EvalSteps from './EvalSteps';
 import EvalHeader from './EvalHeader';
 import SubmitButton from './SubmitButton';
+
+import RequireAuth from '../components/utils/RequireAuth';
+
 import { getEvaluation, createEval } from '../components/utils/eval';
 
 interface EvalutaionFormProps {
@@ -18,6 +21,8 @@ const EvaluationForm = ({ moduleName, moduleId }: EvalutaionFormProps) => {
   ])
 
   return (
+    <>
+    <RequireAuth />
     <div className="flex items-center justify-center">
       <form className="max-w-4xl mx-auto p-6 bg-white rounded shadow-md space-y-6" >
         <h1 className="text-2xl font-bold mb-4 text-black">{moduleName}</h1>
@@ -40,6 +45,7 @@ const EvaluationForm = ({ moduleName, moduleId }: EvalutaionFormProps) => {
         />
       </form>
     </div>
+    </>
   );
 }
 
