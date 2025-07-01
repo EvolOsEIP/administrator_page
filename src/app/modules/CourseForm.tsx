@@ -3,6 +3,7 @@ import CourseHeader from './CourseHeader';
 import CourseSteps from './CourseSteps';
 import SubmitButton from './SubmitButton';
 
+import RequireAuth from '../components/utils/RequireAuth';
 interface CourseFormProps {
   moduleName: string;
   moduleId: number;
@@ -63,6 +64,7 @@ const CourseForm = ({
         //  }
         }
 
+        console.log("Step data:" + step.expectedAnswer);
         return {
           instruction: step.instruction,
           expectedAnswer: step.expectedAnswer,
@@ -73,21 +75,21 @@ const CourseForm = ({
 
     const courseSteps = uploadedSteps.map((step, index) => ({
       title: `step ${index + 1}`,
-      stepIndex: index + 1,
+      stepindex: index + 1,
       type: "course",
       widgets: {
         actions: [
           {
-            data: step.expectedAnswer,
             type: "input_text",
-            description: "j'attends que tu écrives ${expected_value} ici",
+            description: `j'attends que tu écrives ${step.expectedAnswer} ici`,
+            expected_value: step.expectedAnswer,
           },
         ],
         instructions: [
           {
+            data: step.imageName || "",
             type: "image",
             description: "cette image montre comment faire",
-            expected_value: "toto.png" // keep as-is for now
           }
         ]
       },
@@ -101,7 +103,7 @@ const CourseForm = ({
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
+          "Authorization": `Bearer ${localStorage.getItem('token')}`, // Use localStorage to get the token
         },
       });
 
@@ -122,7 +124,7 @@ const CourseForm = ({
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
+        "Authorization": `Bearer ${localStorage.getItem('token')}`, // Use localStorage to get the token
       },
       body: JSON.stringify({
         courses: [
@@ -148,25 +150,28 @@ const CourseForm = ({
   };
 
   return (
-    <div className="flex items-center justify-center">
-      <form className="max-w-4xl mx-auto p-6 bg-white rounded shadow-md space-y-6">
-        <h1 className="text-2xl font-bold mb-4 text-black">{moduleName}</h1>
-        <CourseHeader
-          title={title}
-          setTitle={setTitle}
-          description={description}
-          setDescription={setDescription}
-          //module={moduleName}
-          duration={duration}
-          setDuration={setDuration}
-        />
-        <CourseSteps steps={steps} setSteps={setSteps} />
-        <SubmitButton onClick={(e) => {
-          handleSubmit(e)
-        }}
-        />
-      </form>
-    </div>
+    <>
+      <RequireAuth/>
+      <div className="flex items-center justify-center">
+        <form className="max-w-4xl mx-auto p-6 bg-white rounded shadow-md space-y-6">
+          <h1 className="text-2xl font-bold mb-4 text-black">{moduleName}</h1>
+          <CourseHeader
+            title={title}
+            setTitle={setTitle}
+            description={description}
+            setDescription={setDescription}
+            //module={moduleName}
+            duration={duration}
+            setDuration={setDuration}
+          />
+          <CourseSteps steps={steps} setSteps={setSteps} />
+          <SubmitButton onClick={(e) => {
+            handleSubmit(e)
+          }}
+          />
+        </form>
+      </div>
+    </>
   );
 };
 

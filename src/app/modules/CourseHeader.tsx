@@ -1,6 +1,7 @@
 
 import React from 'react';
 
+import RequireAuth from '../components/utils/RequireAuth';
 interface CourseHeaderProps {
   title: string;
   setTitle: (title: string) => void;
@@ -23,6 +24,8 @@ const CourseHeader = ({
   setDuration
 }: CourseHeaderProps) => {
   return (
+    <>
+      <RequireAuth/>
     <div className="grid grid-cols-2 gap-4">
       <div>
         <label htmlFor="title" className="block text-gray-700 font-medium mb-1">Titre du cours</label>
@@ -66,6 +69,7 @@ const CourseHeader = ({
         </div>
       </div>
     </div>
+    </>
   );
 };
 
