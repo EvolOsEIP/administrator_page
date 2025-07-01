@@ -8,12 +8,19 @@ interface CourseFormProps {
   moduleName: string;
   moduleId: number;
   onCourseCreated: () => void;
+  courseContent?: any; // optional, can be null or any type
+  courseTitle?: string; // optional, can be null or any type
+  courseDescription?: string; // optional, can be null or any type
 }
 
 const CourseForm = ({
   moduleName,
   moduleId,
-  onCourseCreated
+  onCourseCreated,
+  courseContent = null,
+  courseTitle = '',
+  courseDescription = ''
+
 }: CourseFormProps) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -156,15 +163,19 @@ const CourseForm = ({
         <form className="max-w-4xl mx-auto p-6 bg-white rounded shadow-md space-y-6">
           <h1 className="text-2xl font-bold mb-4 text-black">{moduleName}</h1>
           <CourseHeader
-            title={title}
+            title={courseTitle || title}
             setTitle={setTitle}
-            description={description}
+            description={courseDescription || description}
             setDescription={setDescription}
             //module={moduleName}
             duration={duration}
             setDuration={setDuration}
           />
-          <CourseSteps steps={steps} setSteps={setSteps} />
+          <CourseSteps
+            steps={steps}
+            setSteps={setSteps}
+            courseContent={courseContent}
+            />
           <SubmitButton onClick={(e) => {
             handleSubmit(e)
           }}

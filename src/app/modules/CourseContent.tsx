@@ -1,13 +1,19 @@
+
 import { useState, useEffect } from 'react';
 import RequireAuth from '../components/utils/RequireAuth';
+import { MinusCircle, ChevronDown, ChevronUp } from 'lucide-react';
+import CourseForm from './CourseForm';
 
 interface CourseContentProps {
   courseId: number;
   courseTitle: string;
+  courseDescription?: string;
 }
 
-const CourseContent = ({ courseId, courseTitle }: CourseContentProps) => {
+const CourseContent = ({ courseId, courseTitle, courseDescription }: CourseContentProps) => {
   const [courseContent, setCourseContent] = useState<any[]>([]);
+  const [isOpen, setIsOpen] = useState<boolean[]>([]);
+  const [steps, setSteps] = useState<any[]>([]);
 
   const getCourseContent = async () => {
     try {
@@ -22,11 +28,12 @@ const CourseContent = ({ courseId, courseTitle }: CourseContentProps) => {
       if (!response.ok) {
         throw new Error('Failed to fetch course content');
       }
+
       const data = await response.json();
       if (Array.isArray(data)) {
         setCourseContent(data);
-      }
-      else {
+        setIsOpen(data.map(() => false)); // one isOpen per step
+      } else {
         console.error('Course content is not an array:', data);
         setCourseContent([]);
       }
@@ -34,42 +41,41 @@ const CourseContent = ({ courseId, courseTitle }: CourseContentProps) => {
       console.error('Error fetching course content:', error);
       setCourseContent([]);
     }
-  }
+  };
+
+  const toggleStep = (index: number) => {
+    setIsOpen((prev) => prev.map((val, i) => (i === index ? !val : val)));
+  };
+
+  const removeStep = (index: number) => {
+    // Optional: remove step logic
+    console.log('Remove step at index:', index);
+  };
 
   useEffect(() => {
     getCourseContent();
   }, [courseId]);
 
-  return (
-<>
-  <RequireAuth />
-  <div className="flex flex-col items-center justify-start h-screen p-6">
-    <div className="mb-4">
-      <h1 className="text-2xl font-bold text-black">{courseTitle}</h1>
-      <h3 className="text-sm text-gray-500">Course ID: {courseId}</h3>
-    </div>
 
-    {/* Scrollable container */}
-    <div className="w-full max-w-3xl bg-white rounded shadow p-4 overflow-y-auto" style={{ maxHeight: '40vh' }}>
-      {Array.isArray(courseContent) && courseContent.length > 0 ? (
-        courseContent.map((course, index) => (
-          <div
-            key={index}
-            className="flex items-center justify-between p-4 bg-gray-100 border-b mb-2 last:border-b-0 cursor-pointer hover:bg-gray-200"
-            onClick={() => {
-              console.log(`Clicked on step: ${index}`);
-            }}
-          >
-            <span className="text-black">Step {index + 1}</span>
-          </div>
-        ))
-      ) : (
-        <p className="text-gray-500 text-center">No content available.</p>
-      )}
-    </div>
-  </div>
-</>
-);
-}
+  return (
+    <>
+      <RequireAuth />
+      <div className="flex flex-col items-center justify-start h-screen p-6">
+        <div className="mb-4">
+          <h1 className="text-2xl font-bold text-black">{courseTitle}</h1>
+          <h3 className="text-sm text-gray-500">Course ID: {courseId}</h3>
+        </div>
+
+        <div className="w-full max-w-3xl bg-white rounded shadow p-4 overflow-y-auto" style={{ maxHeight: '40vh' }}>
+         <CourseForm
+          courseContent={courseContent}
+          courseTitle={courseTitle}
+          courseDescription={courseDescription}
+          />
+        </div>
+      </div>
+    </>
+  );
+};
 
 export default CourseContent;

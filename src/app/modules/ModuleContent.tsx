@@ -142,6 +142,7 @@ const ModuleContent = ({ onClose, moduleId, moduleName }: ModuleContentProps) =>
           <CourseContent
             courseId={selectedCourse.courseid}
             courseTitle={selectedCourse.title}
+            courseDescription={selectedCourse.description}
           />
         )}
 

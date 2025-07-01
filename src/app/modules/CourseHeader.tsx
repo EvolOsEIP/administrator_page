@@ -21,7 +21,7 @@ const CourseHeader = ({
  // module,
   //setModule,
   duration,
-  setDuration
+  setDuration,
 }: CourseHeaderProps) => {
   return (
     <>
@@ -32,9 +32,8 @@ const CourseHeader = ({
         <input
           type="text"
           id="title"
-          placeholder="ex: Les caractères spéciaux"
+          placeholder={(title.length > 0) ? title : "ex: Les caractères spéciaux"}
           className="w-full p-2 rounded bg-gray-600 text-white placeholder-gray-300"
-          value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
         />
@@ -44,9 +43,8 @@ const CourseHeader = ({
         <input
           type="text"
           id="description"
-          placeholder="ex: Apprendre à utiliser les caractères spéciaux"
+          placeholder={(description.length > 0) ? description : "ex: Apprendre à utiliser les caractères spéciaux"}
           className="w-full p-2 rounded bg-gray-600 text-white placeholder-gray-300"
-          value={description}
           onChange={(e) => setDescription(e.target.value)}
           required
         />
