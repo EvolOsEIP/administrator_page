@@ -53,22 +53,6 @@ const CourseForm = ({
           const formData = new FormData();
           formData.append("file", step.image);
 
-        //  try {
-        //    const res = await fetch(`${process.env.NEXT_PUBLIC_HOST_URL}/api/`, {
-        //      method: "POST",
-        //      headers: {
-        //        "Authorization": `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`,
-        //      },
-        //      body: formData,
-        //    });
-
-        //    if (!res.ok) throw new Error("Failed to upload image");
-
-        //    const data = await res.json();
-        //    uploadedImageName = data.filename || data.url || "";
-        //  } catch (err) {
-        //    console.error("Image upload error:", err);
-        //  }
         }
 
         console.log("Step data:" + step.expectedAnswer);
