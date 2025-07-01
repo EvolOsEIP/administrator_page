@@ -2,6 +2,7 @@ import { useState } from 'react';
 import EvalSteps from './EvalSteps';
 import EvalHeader from './EvalHeader';
 import SubmitButton from './SubmitButton';
+import getEvaluation from '../components/utils/eval';
 
 interface EvalutaionFormProps {
   moduleName: string;
@@ -21,6 +22,8 @@ const EvaluationForm = ({ moduleName, moduleId }: EvalutaionFormProps) => {
       alert('Please fill in all fields');
       return;
     }
+    const evals = await getEvaluation();
+    console.log('Fetched evaluations:', evals.length);
     const res = await fetch(`${process.env.NEXT_PUBLIC_HOST_URL}/api/modules/content`, {
       method: 'POST',
       headers: {
@@ -29,33 +32,59 @@ const EvaluationForm = ({ moduleName, moduleId }: EvalutaionFormProps) => {
       },
       body: JSON.stringify({
         "evaluations": [{
-            "evaluationIndex": 5,
+            "evaluationIndex": evals.length + 1,
             "moduleId": moduleId,
-            "title": "Introduction to Digital Literacy",
+            "title": title,
             "assistantDiag": {},
-            "description": "Learn the basics of using a digital device.",
-            "instruction": "Follow the instructions to get started.",
-            "Steps": [{
-              "title": "step 1",
-              "stepid": 1,
-              "type": "evaluation",
-              "widgets": {
-                "actions": [
+            "description": description,
+            "instruction": "Suivez les instructions ci-dessous pour compléter l'évaluation.",
+//            "Steps": [{
+//              "title": "step 1",
+//              "stepid": 1,
+//              "type": "evaluation",
+//              "widgets": {
+//                "actions": [
+//                  {
+//                    "data": "je veux ca et pas autre chose.",
+//                      "type": "input_text",
+//                      "description": "jattends que tu écrives ${expected_value} ici"
+//                    }
+//                  ],
+//                  "instructions": [{
+//                    "type": "image",
+//                    "description": "cette image montre un singe qui se pendouille 1",
+//                    "expected_value": "unNaffaire.png"
+//                  }
+//                ]
+//              },
+//              "instruction": "blabla 1"
+//            }]
+
+            "Steps": steps.map((step, index) => ({
+              title: `Step ${index + 1}`,
+              stepid: index + 1,
+              type: "evaluation",
+              widgets: {
+                actions: [
                   {
-                    "data": "je veux ca et pas autre chose.",
-                      "type": "input_text",
-                      "description": "jattends que tu écrives ${expected_value} ici"
-                    }
-                  ],
-                  "instructions": [{
-                    "type": "image",
-                    "description": "cette image montre un singe qui se pendouille 1",
-                    "expected_value": "unNaffaire.png"
+                    data: step.expectedAnswer,
+                    type: "input_text",
+                    description: `Please write your answer for step ${index + 1} here`,
+                    expected_value: step.expectedAnswer
                   }
-                ]
+                ],
+                instructions: step.image
+                  ? [
+                      {
+                        type: "image",
+                        description: step.instruction,
+                        expected_value: step.image.name
+                      }
+                    ]
+                  : []
               },
-              "instruction": "blabla 1"
-            }]
+              instruction: step.instruction
+            }))
           }]
       }),
     }).then((response) => {
@@ -91,7 +120,9 @@ const EvaluationForm = ({ moduleName, moduleId }: EvalutaionFormProps) => {
           steps={steps}
           setSteps={setSteps}
         />
-         <SubmitButton onClick={() => {
+         <SubmitButton onClick={(e) => {
+           // avoid refreshing
+            e.preventDefault();
           createEval()
         }}
         />
