@@ -1,6 +1,5 @@
 import type { NextConfig } from 'next';
 
-
 const isExport = process.env.EXPORT_STATIC === 'true';
 
 const nextConfig = {
