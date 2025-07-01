@@ -64,6 +64,7 @@ const CourseForm = ({
         //  }
         }
 
+        console.log("Step data:" + step.expectedAnswer);
         return {
           instruction: step.instruction,
           expectedAnswer: step.expectedAnswer,
@@ -74,21 +75,21 @@ const CourseForm = ({
 
     const courseSteps = uploadedSteps.map((step, index) => ({
       title: `step ${index + 1}`,
-      stepIndex: index + 1,
+      stepindex: index + 1,
       type: "course",
       widgets: {
         actions: [
           {
-            data: step.expectedAnswer,
             type: "input_text",
-            description: "j'attends que tu écrives ${expected_value} ici",
+            description: `j'attends que tu écrives ${step.expectedAnswer} ici`,
+            expected_value: step.expectedAnswer,
           },
         ],
         instructions: [
           {
+            data: step.imageName || "",
             type: "image",
             description: "cette image montre comment faire",
-            expected_value: "toto.png" // keep as-is for now
           }
         ]
       },
