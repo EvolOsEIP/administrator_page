@@ -1,16 +1,27 @@
 
 import React from 'react';
 
+interface CourseHeaderProps {
+  title: string;
+  setTitle: (title: string) => void;
+  description: string;
+  setDescription: (description: string) => void;
+  //module?: string; // Uncomment if module is needed
+  //setModule?: (module: string) => void; // Uncomment if module is needed
+  duration: number;
+  setDuration: (duration: number) => void;
+}
+
 const CourseHeader = ({
   title,
   setTitle,
   description,
   setDescription,
-  module,
+ // module,
   //setModule,
   duration,
   setDuration
-}) => {
+}: CourseHeaderProps) => {
   return (
     <div className="grid grid-cols-2 gap-4">
       <div>
@@ -46,7 +57,10 @@ const CourseHeader = ({
             className="w-20 p-2 rounded bg-gray-600 text-white mr-2"
             placeholder="5"
             value={duration}
-            onChange={(e) => setDuration(Number(e.target.value))}
+            onChange={(e) => {
+              setDuration(Number(e.target.value))
+              console.log(`Duration set to: ${duration} minutes`);
+            }}
           />
           <span className="text-gray-700 mt-2">minutes (optionel)</span>
         </div>

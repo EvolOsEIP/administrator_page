@@ -15,14 +15,14 @@ const EvalHeader = ({
   setTitle,
   description,
   setDescription,
-  module,
-  duration,
+  //module,
+  //duration,
   setDuration
 }: EvalHeaderProps) => {
   return (
     <div className="grid grid-cols-2 gap-4">
       <div>
-        <label htmlFor="title" className="block text-gray-700 font-medium mb-1">Titre de l'évaluation </label>
+        <label htmlFor="title" className="block text-gray-700 font-medium mb-1">Titre de l&apos;évaluation </label>
         <input
           type="text"
           id="title"
@@ -34,7 +34,7 @@ const EvalHeader = ({
         />
       </div>
       <div>
-        <label htmlFor="description" className="block text-gray-700 font-medium mb-1">Description de l'évaluation</label>
+        <label htmlFor="description" className="block text-gray-700 font-medium mb-1">Description de l&apos;évaluation</label>
         <input
           type="text"
           id="description"

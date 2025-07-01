@@ -1,7 +1,22 @@
 import React from 'react';
 import { ChevronDown, ChevronUp, MinusCircle } from 'lucide-react';
 
-const CourseSteps = ({ steps, setSteps }) => {
+interface CourseStepsProps {
+  steps: Array<{
+    instruction: string;
+    expectedAnswer: string;
+    image: File | null;
+    isOpen: boolean;
+  }>;
+  setSteps: React.Dispatch<React.SetStateAction<Array<{
+    instruction: string;
+    expectedAnswer: string;
+    image: File | null;
+    isOpen: boolean;
+  }>>>;
+}
+
+const CourseSteps = ({ steps, setSteps }: CourseStepsProps) => {
   const addStep = () => {
     setSteps([...steps, { instruction: '', expectedAnswer: '', image: null, isOpen: false }]);
   };

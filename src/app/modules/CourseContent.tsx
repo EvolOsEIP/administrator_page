@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 
 interface CourseContentProps {
   courseId: number;
-  courseName: string;
+  courseTitle: string;
 }
 
-const CourseContent = ({ courseId, courseName }: CourseContentProps) => {
+const CourseContent = ({ courseId, courseTitle }: CourseContentProps) => {
   const [courseContent, setCourseContent] = useState([]);
 
   const getCourseContent = async () => {
@@ -24,7 +24,7 @@ const CourseContent = ({ courseId, courseName }: CourseContentProps) => {
       setCourseContent(data.content);
     } catch (error) {
       console.error('Error fetching course content:', error);
-      setCourseContent('Failed to load course content.');
+      setCourseContent([]);
     }
   }
 
@@ -35,7 +35,7 @@ const CourseContent = ({ courseId, courseName }: CourseContentProps) => {
   return (
     <div className="flex items-center justify-center">
       <div>
-        <h1 className="text-xl font-bold text-black">{courseName}</h1>
+        <h1 className="text-xl font-bold text-black">{courseTitle}</h1>
         <h3 className="text-sm text-gray-500">Course ID: {courseId}</h3>
       </div>
       <div className="overflow-y-auto flex-grow">
