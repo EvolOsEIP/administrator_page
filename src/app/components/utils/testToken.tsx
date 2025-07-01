@@ -8,8 +8,13 @@ export default async function checkToken() {
     });
     console.log("res: ", res);
     if (!res.ok) {
-      throw new Error("Token is invalid or expired");
+      if (res.status === 403) {
+        localStorage.removeItem("token"); // Clear invalid token
+        return false; // Token is invalid or request failed 
+      } else {
+        throw new Error(`Network response was not ok: ${res.statusText}`);
     }
+  }
     return true;
   } catch (error) {
     console.error("Error checking token:", error);

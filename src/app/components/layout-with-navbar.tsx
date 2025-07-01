@@ -4,6 +4,7 @@ import type React from "react"
 import { Home, Grid3X3, User, LogOut } from "lucide-react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
+import RequireAuth from "./utils/RequireAuth"
 
 interface LayoutWithNavbarProps {
   children: React.ReactNode
@@ -20,6 +21,8 @@ export function LayoutWithNavbar({ children }: LayoutWithNavbarProps) {
   }
 
   return (
+    <>
+      <RequireAuth />
     <div className="flex h-screen bg-white">
       {/* Navbar - Fixed width */}
       <div className="w-64 bg-white border-r border-gray-300 flex flex-col justify-between">
@@ -92,5 +95,6 @@ export function LayoutWithNavbar({ children }: LayoutWithNavbarProps) {
       {/* Main Content Area */}
       <div className="flex-1 bg-gray-50 overflow-auto">{children}</div>
     </div>
+    </>
   )
 }

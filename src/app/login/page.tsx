@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import checkToken from "../components/utils/testToken";
+import SubmitButton from "../modules/SubmitButton";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -8,9 +9,14 @@ const Login: React.FC = () => {
 
   // Rediriger si déjà connecté (token valide)
   useEffect(() => {
-    if (checkToken()) {
-      window.location.href = "/"; // mets ici ta route protégée
+    const checkLogin = async () => {
+        const isValid = await checkToken()
+          if (isValid) {
+            console.log("Token is valid, redirecting to home page.");
+            window.location.href = "/"; // redirection après login
+          }
     }
+    checkLogin();  
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -40,8 +46,9 @@ const Login: React.FC = () => {
       localStorage.setItem("token", res.token);
       console.log("Login successful, token stored:", res.token);
 
-      if (checkToken()) {
-        window.location.href = "/dashboard"; // redirection après login
+      if (await checkToken()) {
+        console.log("Token is valid, redirecting to home page.");
+        window.location.href = "/"; // redirection après login
       }
     } catch (error) {
       console.error("There was a problem with the fetch operation:", error);
@@ -79,11 +86,12 @@ const Login: React.FC = () => {
             placeholder="********"
           />
         </div>
-        <button
-          type="submit"
-          className="w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+        <button onClick={(e) => {
+            handleSubmit(e);
+          }}
+          className="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded hover:bg-blue-700 transition duration-200"
         >
-          Log In
+          Se connecter
         </button>
       </form>
     </div>
