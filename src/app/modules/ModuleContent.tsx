@@ -69,41 +69,56 @@ const ModuleContent = ({ onClose, moduleId, moduleName }: ModuleContentProps) =>
   }, [moduleId]);
 
   return (
-    <>
-    <RequireAuth />
-    <div className="flex flex-col h-[600px] w-full bg-white rounded shadow">
-      {isCreatingCourse ? (
-        <CourseForm moduleName={moduleName} moduleId={moduleId} onCourseCreated={() => {
+
+<>
+  <RequireAuth />
+  <div className="flex flex-col h-[600px] w-full bg-white rounded shadow overflow-hidden">
+    {isCreatingCourse ? (
+      <CourseForm
+        moduleName={moduleName}
+        moduleId={moduleId}
+        onCourseCreated={() => {
           setIsCreatingCourse(false);
           getCourses(moduleId).then(setCourses).catch(console.error);
-        }} />
-      ) : (isCreatingEvaluation ? (
-        <EvaluationForm moduleName={moduleName} moduleId={moduleId} onEvaluationCreated={() => {
+        }}
+      />
+    ) : isCreatingEvaluation ? (
+      <EvaluationForm
+        moduleName={moduleName}
+        moduleId={moduleId}
+        onEvaluationCreated={() => {
           setIsCreatingEvaluation(false);
-        }} />
-      ) : (
-        <>
-          {/* Fixed Header */}
-          <div>
-            <h1 className="text-xl font-bold text-black">{moduleName}</h1>
-          </div>
+        }}
+      />
+    ) : selectedCourse && !isDeletingCourse ? (
+      <div className="flex-grow h-full overflow-auto">
+        <CourseContent
+          courseId={selectedCourse.courseid}
+          courseTitle={selectedCourse.title}
+        />
+      </div>
+    ) : (
+      <>
+        {/* Header */}
+        <div className="px-4 py-2">
+          <h1 className="text-xl font-bold text-black">{moduleName}</h1>
+        </div>
 
-          {/* Scrollable List */}
-          <div className="overflow-y-auto flex-grow">
+        {/* Scrollable List */}
+
+{/* Scrollable Course List - Only shown when no course is selected */}
+        {!selectedCourse && (
+          <div className="overflow-y-auto flex-grow px-4">
             {courses.map((course, index) => (
               <div
                 key={index}
                 className="flex items-center justify-between p-4 bg-gray-100 border-b mb-2 last:border-b-0 cursor-pointer hover:bg-gray-200"
-                onClick={() => {
-                  console.log("Selected course:", course);
-                  setSelectedCourse(course);
-                }}
+                onClick={() => setSelectedCourse(course)}
               >
-                  <h2 className="text-lg font-semibold text-black">{course.title}</h2>
+                <h2 className="text-lg font-semibold text-black">{course.title}</h2>
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    console.log("Removing course:", course);
                     setIsDeletingCourse(true);
                     setSelectedCourse(course);
                   }}
@@ -113,87 +128,70 @@ const ModuleContent = ({ onClose, moduleId, moduleName }: ModuleContentProps) =>
                 </button>
               </div>
             ))}
+
             <button
-              onClick={() => {
-                setIsCreatingCourse(true);
-              }}
-              className="w-full text-left flex items-center justify-center p-4 bg-gray-100 border-2 border-dashed border-blue-500 mb-2 hover:bg-gray-200 cursor-pointer"
+              onClick={() => setIsCreatingCourse(true)}
+              className="w-full flex items-center justify-center p-4 bg-gray-100 border-2 border-dashed border-blue-500 mb-2 hover:bg-gray-200 cursor-pointer"
             >
               <span className="flex items-center gap-2 text-lg font-semibold text-blue-500">
                 <CirclePlus /> Add New Course
               </span>
             </button>
             <button
-              onClick={() => {
-                setIsCreatingEvaluation(true);
-              }}
-              className="w-full text-left flex items-center justify-center p-4 bg-gray-100 border-2 border-dashed border-orange-500 mb-2 hover:bg-gray-200 cursor-pointer"
+              onClick={() => setIsCreatingEvaluation(true)}
+              className="w-full flex items-center justify-center p-4 bg-gray-100 border-2 border-dashed border-orange-500 mb-2 hover:bg-gray-200 cursor-pointer"
             >
               <span className="flex items-center gap-2 text-lg font-semibold text-orange-500">
                 <CirclePlus /> Add New Evaluation
               </span>
             </button>
           </div>
-
-          {/* Footer / Optional content */}
-          <div className="p-4 border-t bg-gray-100"></div>
-
-        {selectedCourse && !isDeletingCourse && (
-          <CourseContent
-            courseId={selectedCourse.courseid}
-            courseTitle={selectedCourse.title}
-          />
         )}
+      </>
+    )}
 
-        {isDeletingCourse && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center">
-            <div
-              className="absolute inset-0 backdrop-blur-sm"
+    {/* 🔴 Deletion Modal */}
+    {isDeletingCourse && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div
+          className="absolute inset-0 backdrop-blur-sm"
+          onClick={() => {
+            setSelectedModule(null);
+            setShowModuleCreation(false);
+          }}
+        ></div>
+        <div className="bg-white p-6 rounded-lg shadow-lg relative w-full max-w-md z-10">
+          <h2 className="text-xl text-black font-bold mb-4">Supprimer le cours</h2>
+          <p className="text-black">Es-tu sûr de vouloir supprimer ce cours ?</p>
+          <div className="mt-4 flex justify-end gap-2">
+            <button
+              onClick={() => setIsDeletingCourse(false)}
+              className="px-4 py-2 bg-gray-300 text-black rounded hover:bg-gray-400 transition-colors"
+            >
+              Annuler
+            </button>
+            <button
               onClick={() => {
-                setSelectedModule(null)
-                setShowModuleCreation(false)
+                deleteCourse(selectedCourse.courseid)
+                  .then(() => {
+                    setIsDeletingCourse(false);
+                    setSelectedCourse(null);
+                    getCourses(moduleId).then(setCourses).catch(console.error);
+                  })
+                  .catch((error) => {
+                    console.error("Error deleting course:", error);
+                  });
               }}
-            ></div>
-
-            <div className="fixed inset-0 z-50 flex items-center justify-center">
-              <div className="absolute inset-0 bg-black/50" onClick={() => setIsDeletingCourse(false)}></div>
-                <div className="bg-white p-6 rounded-lg shadow-lg relative w-full max-w-md z-10">
-                  <h2 className="text-xl text-black font-bold mb-4">Supprimer le cours</h2>
-                  <p className="text-black">Es-tu sûr de vouloir supprimer ce cours ?</p>
-                  <div className="mt-4 flex justify-end gap-2">
-                    <button
-                      onClick={() => setIsDeletingCourse(false)}
-                      className="px-4 py-2 bg-gray-300 text-black rounded hover:bg-gray-400 transition-colors"
-                    >
-                      Annuler
-                    </button>
-                    <button
-                      onClick={() => {
-                        console.log("Deleting course with ID:", selectedCourse.courseid);
-                        deleteCourse(selectedCourse.courseid)
-                          .then(() => {
-                            setIsDeletingCourse(false);
-                            setSelectedCourse(null);
-                            console.log("Course selected for deletion:", selectedCourse);
-                            getCourses(moduleId).then(setCourses).catch(console.error);
-                          })
-                          .catch((error) => {
-                            console.error("Error deleting course:", error);
-                          });
-                      }}
-                      className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
-                    >
-                      Supprimer
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-        </>
-      ))}
-    </div>
-    </>
+              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+            >
+              Supprimer
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
+</>
   );
 };
 
