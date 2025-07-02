@@ -11,6 +11,7 @@ interface CourseHeaderProps {
   //setModule?: (module: string) => void; // Uncomment if module is needed
   duration: number;
   setDuration: (duration: number) => void;
+  isEditMode?: boolean; // Optional prop for edit mode
 }
 
 const CourseHeader = ({
@@ -22,6 +23,7 @@ const CourseHeader = ({
   //setModule,
   duration,
   setDuration,
+  isEditMode = false, // Default to false if not provided
 }: CourseHeaderProps) => {
   return (
     <>
@@ -35,7 +37,7 @@ const CourseHeader = ({
           placeholder={(title.length > 0) ? title : "ex: Les caractères spéciaux"}
           className="w-full p-2 rounded bg-gray-600 text-white placeholder-gray-300"
           onChange={(e) => setTitle(e.target.value)}
-          required
+          required={!isEditMode} // Make required only if not in edit mode
         />
       </div>
       <div>
@@ -46,7 +48,7 @@ const CourseHeader = ({
           placeholder={(description.length > 0) ? description : "ex: Apprendre à utiliser les caractères spéciaux"}
           className="w-full p-2 rounded bg-gray-600 text-white placeholder-gray-300"
           onChange={(e) => setDescription(e.target.value)}
-          required
+          required={!isEditMode} // Make required only if not in edit mode
         />
       </div>
       <div>

@@ -71,6 +71,7 @@ const CourseContent = ({ courseId, courseTitle, courseDescription }: CourseConte
           courseContent={courseContent}
           courseTitle={courseTitle}
           courseDescription={courseDescription}
+          isEditMode={true}
           />
         </div>
       </div>

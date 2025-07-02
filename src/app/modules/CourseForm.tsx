@@ -11,6 +11,7 @@ interface CourseFormProps {
   courseContent?: any; // optional, can be null or any type
   courseTitle?: string; // optional, can be null or any type
   courseDescription?: string; // optional, can be null or any type
+  isEditMode?: boolean; // optional, to indicate if the form is in edit mode
 }
 
 const CourseForm = ({
@@ -19,7 +20,8 @@ const CourseForm = ({
   onCourseCreated,
   courseContent = null,
   courseTitle = '',
-  courseDescription = ''
+  courseDescription = '',
+  isEditMode = false, // default to false if not provided
 
 }: CourseFormProps) => {
   const [title, setTitle] = useState('');
@@ -36,18 +38,18 @@ const CourseForm = ({
       step.instruction.trim() !== "" && step.expectedAnswer.trim() !== "";
 
 
-if (!title.trim() && !courseContent?.title) {
+if (!title.trim() && !courseContent?.title && !isEditMode) {
   alert("Please provide a title.");
   return;
 }
-if (!description.trim() && !courseContent?.description) {
+if (!description.trim() && !courseContent?.description && !isEditMode) {
   alert("Please provide a description.");
   return;
 }
 
 if (
   (!courseContent?.steps || courseContent.steps.length === 0) &&
-  steps.filter(s => s.instruction.trim() && s.expectedAnswer.trim()).length < 6
+  steps.filter(s => s.instruction.trim() && s.expectedAnswer.trim()).length < 6 && !isEditMode
 ) {
   alert("Please add at least 6 steps.");
   return;
@@ -162,6 +164,7 @@ if (
             //module={moduleName}
             duration={duration}
             setDuration={setDuration}
+            isEditMode={isEditMode}
           />
           <CourseSteps
             steps={steps}
@@ -169,7 +172,11 @@ if (
             courseContent={courseContent}
             />
           <SubmitButton onClick={(e) => {
-            handleSubmit(e)
+            if (isEditMode) {
+              alert("This is an edit mode, no submission will be made.");
+              return;
+            }
+            handleSubmit(e);
           }}
           />
         </form>
