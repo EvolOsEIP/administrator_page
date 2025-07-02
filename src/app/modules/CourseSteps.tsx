@@ -26,21 +26,23 @@ const CourseSteps = ({ steps, setSteps, courseContent = null }: CourseStepsProps
     setSteps(prev => prev.filter((_, i) => i !== index));
   };
 
+    const [openStates, setOpenStates] = React.useState<boolean[]>([]);
+
   const toggleStep = (index: number) => {
+    console.log('Toggling step:', index);
     setSteps(prev =>
       prev.map((step, i) =>
-        i === index ? { ...step, isOpen: !step.isOpen } : step
+        i === index ? { ...step, isOpen: (courseContent ? !openStates[index] : !step.isOpen) } : step
       )
     );
   };
 
-    const [openStates, setOpenStates] = React.useState<boolean[]>([]);
 
-    React.useEffect(() => {
-      if (courseContent) {
-        setOpenStates(courseContent.map(() => false));
-      }
-    }, [courseContent]);
+  React.useEffect(() => {
+    if (courseContent && courseContent.length) {
+      setOpenStates(Array(courseContent.length).fill(false));
+    }
+  }, [courseContent]);
 
     React.useEffect(() => {
       if (courseContent && courseContent.length) {
@@ -74,10 +76,8 @@ return (
             {/* Toggleable Step Header */}
             <div
               className="flex items-center justify-between ml-6 cursor-pointer"
+
               onClick={() => {
-                if (!courseContent) {
-                  toggleStep(index);
-                }
                 if (courseContent) {
                   setOpenStates(prev => {
                     const updated = [...prev];

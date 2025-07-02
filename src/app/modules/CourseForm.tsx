@@ -35,15 +35,23 @@ const CourseForm = ({
     const isStepValid = (step: { instruction: string; expectedAnswer: string; image: File | null }) =>
       step.instruction.trim() !== "" && step.expectedAnswer.trim() !== "";
 
-    if (!title.trim() || !description.trim() || steps.some(step => !isStepValid(step))) {
-      alert("Please fill in all required fields.");
-      return;
-    }
 
-    if (steps.length < 6) {
-      alert("Please add at least 6 steps.");
-      return;
-    }
+if (!title.trim() && !courseContent?.title) {
+  alert("Please provide a title.");
+  return;
+}
+if (!description.trim() && !courseContent?.description) {
+  alert("Please provide a description.");
+  return;
+}
+
+if (
+  (!courseContent?.steps || courseContent.steps.length === 0) &&
+  steps.filter(s => s.instruction.trim() && s.expectedAnswer.trim()).length < 6
+) {
+  alert("Please add at least 6 steps.");
+  return;
+}
 
     const uploadedSteps = await Promise.all(
       steps.map(async (step) => {
