@@ -7,7 +7,7 @@ const Register: React.FC = () => {
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("learner");
+  const [role, setRole] = useState("admin");
 
   // Redirection si connecté
   useEffect(() => {
