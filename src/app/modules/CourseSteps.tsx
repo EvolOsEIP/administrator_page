@@ -1,132 +1,115 @@
-import React from 'react';
-import { ChevronDown, ChevronUp, MinusCircle } from 'lucide-react';
+import React, { useState } from 'react';
+import StepEditorModal from '../components/StepEditorModal';
+
+interface Step {
+  instruction: string;
+  expectedAnswer: string;
+  image: File | null;
+}
 
 interface CourseStepsProps {
-  steps: Array<{
-    instruction: string;
-    expectedAnswer: string;
-    image: File | null;
-    isOpen: boolean;
-  }>;
-  setSteps: React.Dispatch<React.SetStateAction<Array<{
-    instruction: string;
-    expectedAnswer: string;
-    image: File | null;
-    isOpen: boolean;
-  }>>>;
+  steps: Step[];
+  setSteps: React.Dispatch<React.SetStateAction<Step[]>>;
 }
 
 const CourseSteps = ({ steps, setSteps }: CourseStepsProps) => {
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+
+  const openEditor = (index: number) => {
+    setEditingIndex(index);
+  };
+
+  const closeEditor = () => {
+    setEditingIndex(null);
+  };
+
+  const handleChange = (field: keyof Step, value: any) => {
+    if (editingIndex === null) return;
+    const updatedSteps = [...steps];
+    updatedSteps[editingIndex] = {
+      ...updatedSteps[editingIndex],
+      [field]: value,
+    };
+    setSteps(updatedSteps);
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (editingIndex === null) return;
+    const file = e.target.files?.[0] || null;
+    handleChange('image', file);
+  };
+
   const addStep = () => {
-    setSteps([...steps, { instruction: '', expectedAnswer: '', image: null, isOpen: false }]);
+    setSteps([...steps, { instruction: '', expectedAnswer: '', image: null }]);
+    setEditingIndex(steps.length); 
   };
 
-  const removeStep = (index: number) => {
-    setSteps(prev => prev.filter((_, i) => i !== index));
+  const deleteStep = (index: number) => {
+    if (!confirm('Voulez-vous vraiment supprimer cette étape ?')) return;
+    const updatedSteps = steps.filter((_, i) => i !== index);
+    setSteps(updatedSteps);
+    if (editingIndex === index) {
+      closeEditor();
+    } else if (editingIndex !== null && editingIndex > index) {
+      setEditingIndex(editingIndex - 1); 
+    }
   };
-
-  const toggleStep = (index: number) => {
-    setSteps(prev =>
-      prev.map((step, i) =>
-        i === index ? { ...step, isOpen: !step.isOpen } : step
-      )
-    );
-  };
-
 
   return (
-    <div className="space-y-4 bg-gray-200 p-4 rounded">
-      <div className="overflow-y-auto max-h-[400px] space-y-4 pr-2">
+    <div>
+      <div className="grid grid-cols-3 gap-4">
         {steps.map((step, index) => (
-          <div key={index} className="bg-white p-3 rounded shadow relative group">
-            {/* Remove Step Button */}
+          <div key={index} className="relative bg-white p-4 rounded shadow-md min-h-[180px] flex flex-col">
             <button
+              onClick={() => deleteStep(index)}
+              className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-lg hover:bg-red-600"
+              title="Supprimer cette étape"
               type="button"
-              onClick={() => removeStep(index)}
-              className="absolute top-3 left-2 text-red-500 hidden group-hover:block"
-              title="Supprimer l'étape"
             >
-              <MinusCircle size={20} />
+              &minus;
             </button>
 
-            {/* Toggleable Step Header */}
             <div
-              className="flex items-center justify-between ml-6 cursor-pointer"
-              onClick={() => toggleStep(index)}
+              onClick={() => openEditor(index)}
+              className="cursor-pointer flex-1 flex flex-col"
+              title="Modifier cette étape"
             >
-              <p className="text-gray-800 font-medium">
-                Step {index + 1}: {
-                  step.instruction.length > 30
-                    ? `${step.instruction.substring(0, 30)}...`
-                    : step.instruction || ' Ajouter une instruction'
-                }
-              </p>
-              {step.isOpen ? (
-                <ChevronUp className="text-gray-600" />
+              <h3 className="font-semibold mb-2">Étape {index + 1}</h3>
+              {step.image ? (
+                <img
+                  src={URL.createObjectURL(step.image)}
+                  alt={`Step ${index + 1}`}
+                  className="w-full max-h-32 object-cover rounded mb-2"
+                />
               ) : (
-                <ChevronDown className="text-gray-600" />
+                <div className="w-full h-32 bg-gray-100 flex items-center justify-center rounded mb-2 text-gray-400">
+                  Pas d’image
+                </div>
               )}
+              <p className="break-words whitespace-normal"><strong>Instruction :</strong> {step.instruction || '—'}</p>
+              <p className="break-words whitespace-normal"><strong>Réponse :</strong> {step.expectedAnswer || '—'}</p>
             </div>
-
-            {/* Step Content */}
-            {step.isOpen && (
-              <div className="mt-4 space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-black">Instructions</label>
-                  <textarea
-                    required
-                    className="w-full p-2 mt-1 border border-gray-300 rounded text-black"
-                    placeholder="ex: Tapez le mot affiché à l'écran en utilisant uniquement le clavier..."
-                    value={step.instruction}
-                    onChange={(e) => {
-                      const newSteps = [...steps];
-                      newSteps[index].instruction = e.target.value;
-                      setSteps(newSteps);
-                    }}
-                  ></textarea>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-black">Réponse attendue</label>
-                  <input
-                    required
-                    type="text"
-                    className="w-full p-2 mt-1 border border-gray-300 rounded text-black"
-                    placeholder="ex: Bonjour Pierre"
-                    value={step.expectedAnswer}
-                    onChange={(e) => {
-                      const newSteps = [...steps];
-                      newSteps[index].expectedAnswer = e.target.value;
-                      setSteps(newSteps);
-                    }}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Image</label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="mt-1"
-                    onChange={(e) => {
-                      const newSteps = [...steps];
-                      newSteps[index].image = e.target.files?.[0] || null;
-                      setSteps(newSteps);
-                    }}
-                  />
-                </div>
-              </div>
-            )}
           </div>
         ))}
 
-        {/* Add Step Button - keep this inside the scrollable area */}
         <div
-          className="border-2 border-dashed border-gray-400 p-4 rounded flex justify-center items-center cursor-pointer hover:bg-gray-100"
           onClick={addStep}
+          className="flex items-center justify-center cursor-pointer bg-gray-200 rounded shadow-md text-4xl font-bold text-gray-600 hover:bg-gray-300 min-h-[180px]"
+          title="Ajouter une étape"
         >
-          <span className="text-xl text-gray-600">+</span>
-          <span className="ml-2 text-gray-600">Ajouter une étape</span>
+          +
         </div>
-      </div> 
+      </div>
+
+      {editingIndex !== null && (
+        <StepEditorModal
+          index={editingIndex}
+          step={steps[editingIndex]}
+          onClose={closeEditor}
+          onChange={handleChange}
+          onImageChange={handleImageChange}
+        />
+      )}
     </div>
   );
 };
