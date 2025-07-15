@@ -4,7 +4,7 @@ const getEvaluation = async () => {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
     }
   });
   if (!response.ok) {
@@ -25,11 +25,10 @@ const createEval = async (moduleId, moduleName, title, description, steps) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${process.env.NEXT_PUBLIC_TOKEN}`
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
     },
     body: JSON.stringify({
       "evaluations": [{
-          "evaluationIndex": evals.length + 1,
           "moduleId": moduleId,
           "title": title,
           "assistantDiag": {},
@@ -53,7 +52,7 @@ const createEval = async (moduleId, moduleName, title, description, steps) => {
                     {
                       type: "image",
                       description: step.instruction,
-                      expected_value: step.image.name
+                      data: step.image
                     }
                   ]
                 : []

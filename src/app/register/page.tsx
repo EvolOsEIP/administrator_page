@@ -61,10 +61,10 @@ const Register: React.FC = () => {
         onSubmit={handleSubmit}
         className="bg-white shadow-md rounded px-8 py-6 w-full max-w-sm space-y-4"
       >
-        <h2 className="text-2xl font-bold text-center text-black">Register</h2>
+        <h2 className="text-2xl font-bold text-center text-black">Inscription</h2>
 
         <div>
-          <label className="block text-sm font-medium text-black">Username</label>
+          <label className="block text-sm font-medium text-black">nom d'utilisateur</label>
           <input
             type="text"
             required
@@ -76,7 +76,7 @@ const Register: React.FC = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-black">Full name</label>
+          <label className="block text-sm font-medium text-black">Nom et prénom</label>
           <input
             type="text"
             required
@@ -100,7 +100,7 @@ const Register: React.FC = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-black">Password</label>
+          <label className="block text-sm font-medium text-black">Mot de passe</label>
           <input
             type="password"
             required
@@ -110,18 +110,6 @@ const Register: React.FC = () => {
             placeholder="********"
           />
         </div>
-
-        <div>
-          <label className="block text-sm font-medium text-black">Role</label>
-          <select
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            className="mt-1 p-2 w-full border border-gray-300 rounded text-black"
-          >
-            <option value="admin">Admin</option>
-          </select>
-        </div>
-
         <button
           type="submit"
           className="w-full bg-green-600 text-white font-semibold py-2 px-4 rounded hover:bg-green-700 transition duration-200"

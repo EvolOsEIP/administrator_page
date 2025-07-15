@@ -49,9 +49,24 @@ const StepEditorModal = ({
           />
         </label>
 
+        
         <label className="block text-gray-700">
           Image :
-          <input type="file" onChange={onImageChange} className="mt-1" />
+          <div className="mt-1">
+            <button
+              type="button"
+              onClick={() => document.getElementById(`step-image-input-${index}`)?.click()}
+              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+            >
+              Choisir une image
+            </button>
+            <input
+              id={`step-image-input-${index}`}
+              type="file"
+              onChange={onImageChange}
+              className="hidden"
+            />
+          </div>
           {step.image && (
             <img
               src={URL.createObjectURL(step.image)}

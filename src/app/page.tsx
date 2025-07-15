@@ -83,6 +83,11 @@ export default function Home() {
         }
 
         const data = await res.json();
+        if (data.length === 0) {
+          console.error("No users found.");
+          window.location.href = "/availables-users"; // Redirect to available users page if no users found
+          return;
+        }
         console.log("Data fetched:", data);
 
         const userName = Array.isArray(data)
@@ -103,6 +108,7 @@ export default function Home() {
       getUser();
     }, undefined);
   }, []);
+
 
 return (
   <>

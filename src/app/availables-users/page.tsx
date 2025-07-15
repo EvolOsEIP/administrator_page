@@ -7,6 +7,7 @@ import { LayoutWithNavbar } from "../components/layout-with-navbar";
 // add a new component with a form by the name
 const Modal = ({name, id}: { name?: string | null, id?: number | null }) => {
   const addUser = async (id: number) => {
+    console.log("adding user with id:", id);
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_HOST_URL}/api/learners/me/${id}`, {
         method: "PUT",
@@ -43,9 +44,9 @@ const Modal = ({name, id}: { name?: string | null, id?: number | null }) => {
         </button>
         <button
           className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-          onClick={() => {
+          onClick={ async () => {
             if (id !== null && id !== undefined) {
-              addUser(id)
+              await addUser(id)
               window.location.reload();
             } else {
               console.error("User ID is null, cannot add user.");

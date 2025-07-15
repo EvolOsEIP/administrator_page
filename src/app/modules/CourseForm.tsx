@@ -74,11 +74,6 @@ const handleStepImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       return;
     }
 
-    if (steps.length < 6) {
-      alert('Ajoutez au moins 6 étapes.');
-      return;
-    }
-
     const uploadedSteps = await Promise.all(
       steps.map(async (step) => {
         let uploadedImageName = '';
@@ -87,7 +82,7 @@ const handleStepImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
           const formData = new FormData();
           formData.append('file', step.image);
 
-          const uploadRes = await fetch(`${process.env.NEXT_PUBLIC_HOST_URL}/api/upload`, {
+          const uploadRes = await fetch(`${process.env.NEXT_PUBLIC_HOST_URL}/upload/image`, {
             method: 'POST',
             headers: {
               Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -124,7 +119,7 @@ const handleStepImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         instructions: step.imageName
           ? [
               {
-                data: step.imageName,
+                data: step.imageName.length > 0 ? step.imageName : null,
                 type: 'image',
                 description: 'cette image montre comment faire',
               },

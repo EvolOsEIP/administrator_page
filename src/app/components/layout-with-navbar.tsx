@@ -28,8 +28,11 @@ export function LayoutWithNavbar({ children }: LayoutWithNavbarProps) {
       <div className="w-64 bg-white border-r border-gray-300 flex flex-col justify-between">
         <div>
           {/* Logo/Header Section */}
-          <div className="h-20 bg-gray-200 border-b border-gray-300 flex items-center justify-center">
-            <div className="text-lg font-bold text-gray-700">EvolOS</div>
+        {/* load evolos logo (favicon.ico) */}
+          <div className="flex items-center justify-center h-16 bg-gray-100 border-b border-gray-300">
+            <Link href="/" className="image w-110 h-20 flex items-center justify-center">
+              <img src="/favicon.ico" alt="EvolOS Logo" className="w-40 h-15" />
+            </Link>
           </div>
 
           {/* Navigation Section */}
