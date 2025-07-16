@@ -51,7 +51,7 @@ export default function Card({ title, imageSrc, description, onClick, onDelete, 
           {menuOpen && (
             <div className="absolute bottom-full right-0 mb-2 w-32 bg-white border rounded shadow-lg z-20">
               <button className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 text-black">
-                View
+                Voir
               </button>
               {canBeDeleted && (
                 <button
@@ -63,7 +63,7 @@ export default function Card({ title, imageSrc, description, onClick, onDelete, 
                 }}
                 >
                   <Trash2 className="inline mr-2 w-4" />
-                  Delete
+                  Supprimer
 
                 </button>
               )}

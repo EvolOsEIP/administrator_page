@@ -120,7 +120,7 @@ const ModuleContent = ({ onClose, moduleId, moduleName }: ModuleContentProps) =>
               className="w-full text-left flex items-center justify-center p-4 bg-gray-100 border-2 border-dashed border-blue-500 mb-2 hover:bg-gray-200 cursor-pointer"
             >
               <span className="flex items-center gap-2 text-lg font-semibold text-blue-500">
-                <CirclePlus /> Add New Course
+                <CirclePlus /> Ajouter un nouveau cours
               </span>
             </button>
             <button
@@ -130,7 +130,7 @@ const ModuleContent = ({ onClose, moduleId, moduleName }: ModuleContentProps) =>
               className="w-full text-left flex items-center justify-center p-4 bg-gray-100 border-2 border-dashed border-orange-500 mb-2 hover:bg-gray-200 cursor-pointer"
             >
               <span className="flex items-center gap-2 text-lg font-semibold text-orange-500">
-                <CirclePlus /> Add New Evaluation
+                <CirclePlus /> Ajouter une évaluation
               </span>
             </button>
           </div>

@@ -61,7 +61,7 @@ const Login: React.FC = () => {
         onSubmit={handleSubmit}
         className="bg-white shadow-md rounded px-8 py-6 w-full max-w-sm space-y-4"
       >
-        <h2 className="text-2xl font-bold text-center text-black">Login</h2>
+        <h2 className="text-2xl font-bold text-center text-black">Se connecter</h2>
 
         <div>
           <label className="block text-sm font-medium text-black">Email</label>
@@ -76,7 +76,7 @@ const Login: React.FC = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-black">Password</label>
+          <label className="block text-sm font-medium text-black">Mot de passe</label>
           <input
             type="password"
             required
@@ -86,7 +86,7 @@ const Login: React.FC = () => {
             placeholder="********"
           />
         </div>
-        <button onClick={(e) => {
+        <button onClick={async (e) => {
             handleSubmit(e);
           }}
           className="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded hover:bg-blue-700 transition duration-200"
